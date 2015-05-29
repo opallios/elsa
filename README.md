@@ -10,3 +10,7 @@ Queries can ask for the responses to be grouped by a given field, creating light
 Authentication and authorization can be LDAP-based, but some configuration is required by the user to specify how the groups and search filters.
 
 Sphinx is RAM-intensive, so occasionally, the system will consolidate indexes into a "permanent" form that does not consume any RAM.  The rate at which this consolidation can run at is the terminal sustained rate of the system (per node).  On a 4 CPU, 4 GB RAM system, this is typically around 6000 logs per second.  The system can burst well over 50,000 logs/second/node for long periods of time as long as it eventually has time to recover.
+
+ODE
+----
+This forked branch is for Opallios distribution of ELSA, ODE. Some of the key changes so far include, running Starman as the default http server, fixes in install script to be more reliable, adding http server watchdog. Please refer to http://www.opallios.org for more details on ODE.
