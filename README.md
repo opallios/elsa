@@ -1,3 +1,34 @@
+# ODE
+
+This forked branch is for Opallios distribution of ELSA, ODE. [ELSA](https://github.com/mcholste/elsa) is a log management and analytical system. Some of the key changes so far include, running Starman as the default http server, fixes in install script to be more reliable, adding http server watchdog. ODE 0.1 can be installed either as packages or image. Please refer to http://www.opallios.org for more details on ODE.
+
+## Getting Started
+
+The latest release of ODE is, **ODE 0.1**. This first ODE release has been tested and verified on four different linux flavors using the standard packaging, deb and rpm.
+
+1. Debian - Ubuntu 12.04 and 14.04
+  * Download the debian package to your machine,
+    `wget http://aws.. `
+  * Run the package,
+    `sudo dpkg -i Downloads/ode-0.1-xxx.deb` 
+2. RPM - RedHat 6.6 and Centos 6.5
+  * Download the rpm package to your machine,
+    `wget http://aws.. `   
+  * Run the package,
+    `sudo yum install Downloads/ode-0.1-xxx.rpm`
+3. At this point ODE is installed on your machine.
+  * Test out sample query using ELSA's web UI
+    `http://<ip>`     
+
+** Note:** You may still use elsa_vars.sh under /etc directory before running the package to make any configuration changes as with original ELSA installation.
+
+You may also use the pre-built ODE images (medium and large systems) on AWS for quick installation or evaluation.
+
+* Ubuntu 12.04 Med -
+* Ubuntu 14.04 Large -
+* RedHat 6.6 Med -
+* Centos 6.5 Med -
+
 elsa
 ====
 
@@ -10,7 +41,3 @@ Queries can ask for the responses to be grouped by a given field, creating light
 Authentication and authorization can be LDAP-based, but some configuration is required by the user to specify how the groups and search filters.
 
 Sphinx is RAM-intensive, so occasionally, the system will consolidate indexes into a "permanent" form that does not consume any RAM.  The rate at which this consolidation can run at is the terminal sustained rate of the system (per node).  On a 4 CPU, 4 GB RAM system, this is typically around 6000 logs per second.  The system can burst well over 50,000 logs/second/node for long periods of time as long as it eventually has time to recover.
-
-ODE
-----
-This forked branch is for Opallios distribution of ELSA, ODE. Some of the key changes so far include, running Starman as the default http server, fixes in install script to be more reliable, adding http server watchdog. Please refer to http://www.opallios.org for more details on ODE.
