@@ -8,26 +8,43 @@ The latest release of ODE is, **ODE 0.1**. This first ODE release has been teste
 
 1. Debian - Ubuntu 12.04 and 14.04
   * Download the debian package to your machine,
-    `wget http://aws.. `
+    ```sh
+        $ cd Downloads
+        $ wget https://s3-us-west-1.amazonaws.com/ode0.1/ode_0.1-2_all.deb 
+    ```
   * Run the package,
-    `sudo dpkg -i Downloads/ode-0.1-xxx.deb` 
+    ```sh
+        $ sudo dpkg -i Downloads/ode_0.1-2_all.deb  (it will complain of missing dependencies. Continue.)
+        $ sudo apt-get install -f  (say Y to continue)
+    ```
 2. RPM - RedHat 6.6 and Centos 6.5
   * Download the rpm package to your machine,
-    `wget http://aws.. `   
+    ```sh
+        $ cd Downloads
+        $ wget https://s3-us-west-1.amazonaws.com/ode0.1/ode-0.1-2.noarch.rpm 
+    ```   
   * Run the package,
-    `sudo yum install Downloads/ode-0.1-xxx.rpm`
-3. At this point ODE is installed on your machine.
+    ```sh
+        $ sudo yum install Downloads/ode-0.1-2.noarch.rpm
+        $ wget http://aws.. 
+    ```
+3. You can monitor install log for the installation progress,
+  ```sh
+    $ tail -f /var/logs/ode_install.log
+  ```
+4. At this point ODE is installed on your machine.
   * Test out sample query using ELSA's web UI
-    `http://<ip>`     
-
-** Note:** You may still use elsa_vars.sh under /etc directory before running the package to make any configuration changes as with original ELSA installation.
+    ```sh
+      http://<ip>
+    ```
+        
+**Note:** You may still use elsa_vars.sh under /etc directory before running the package to make any configuration changes as with original ELSA installation.
 
 You may also use the pre-built ODE images (medium and large systems) on AWS for quick installation or evaluation.
 
 * Ubuntu 12.04 Med -
 * Ubuntu 14.04 Large -
 * RedHat 6.6 Med -
-* Centos 6.5 Med -
 
 elsa
 ====
