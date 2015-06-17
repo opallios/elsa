@@ -1,44 +1,49 @@
-# ODE
-
+ODE
+===================
 This forked branch is for Opallios distribution of ELSA, ODE. [ELSA](https://github.com/mcholste/elsa) is a log management and analytical system. Some of the key changes so far include, running Starman as the default http server, fixes in install script to be more reliable, adding http server watchdog. ODE 0.1 can be installed either as packages or image. Please refer to http://www.opallios.org for more details on ODE.
 
-## Getting Started
-
+Getting Started
+-------------
 The latest release of ODE is, **ODE 0.1**. This first ODE release has been tested and verified on four different linux flavors using the standard packaging, deb and rpm.
 
-1. Debian - Ubuntu 12.04 and 14.04
-  * Download the debian package to your machine,
-    ```sh
-        $ cd Downloads
-        $ wget https://s3-us-west-1.amazonaws.com/ode0.1/ode_0.1-2_all.deb 
-    ```
-  * Run the package,
-    ```sh
-        $ sudo dpkg -i Downloads/ode_0.1-2_all.deb  (it will complain of missing dependencies. Continue.)
-        $ sudo apt-get install -f  (say Y to continue)
-    ```
-2. RPM - RedHat 6.6 and Centos 6.5
-  * Download the rpm package to your machine,
-    ```sh
-        $ cd Downloads
-        $ wget https://s3-us-west-1.amazonaws.com/ode0.1/ode-0.1-2.noarch.rpm 
-    ```   
-  * Run the package,
-    ```sh
-        $ sudo yum install Downloads/ode-0.1-2.noarch.rpm
-        $ wget http://aws.. 
-    ```
-3. You can monitor install log for the installation progress,
-  ```sh
-    $ tail -f /var/logs/ode_install.log
-  ```
-4. At this point ODE is installed on your machine.
-  * Test out sample query using ELSA's web UI
-    ```sh
-      http://<ip>
-    ```
-        
-**Note:** You may still use elsa_vars.sh under /etc directory before running the package to make any configuration changes as with original ELSA installation.
+### <i class="icon-file"></i> ODE Installation
+
+**Note:** You may still use elsa_vars.sh under /etc directory before running the package to make any configuration changes as is the case with the original ELSA installation.
+
+#### Debian - Ubuntu 12.04 and 14.04
+> Download the package,
+```
+> wget https://s3-us-west-1.amazonaws.com/ode0.1/ode_0.1-2_all.deb
+```
+>  Run the package,
+```
+> sudo dpkg -i Downloads/ode_0.1-2_all.deb
+> sudo apt-get install -f
+```
+**Note:** dpkg will complain of missing dependencies, ignore it.
+
+#### RPM - RHEL 6.6 and Centos 6.5
+> Download the package,
+```
+> wget https://s3-us-west-1.amazonaws.com/ode0.1/ode-0.1-2.noarch.rpm
+```
+>  Run the package,
+```
+> sudo yum install Downloads/ode-0.1-2.noarch.rpm
+```
+
+#### Verify Installation
+
+> Check the log,
+```
+  > vi /var/logs/ode_install.log
+```
+> Run web UI,
+```
+> http://<ip>
+```
+
+### <i class="icon-file"></i> AWS Images
 
 You may also use the pre-built ODE images (medium and large systems) on AWS for quick installation or evaluation.
 
