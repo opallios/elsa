@@ -1,6 +1,6 @@
 ODE
 ===================
-This forked branch is for Opallios distribution of ELSA, ODE. [ELSA](https://github.com/mcholste/elsa) is a log management and analytical system. Some of the key changes so far include, running Starman as the default http server, fixes in install script to be more reliable, adding http server watchdog. ODE 0.1 can be installed either as packages or image. Please refer to http://www.opallios.org for more details on ODE.
+This forked branch is for Opallios distribution of ELSA, ODE. [ELSA](https://github.com/mcholste/elsa) is a log management and analytical system. Some of the key changes so far include, running Starman as the default http server, fixes in install script to be more reliable, adding http server watchdog. ODE 0.1 can be installed either as packages or image. Please refer to http://www.opalliosode.org for more details on ODE.
 
 Getting Started
 -------------
@@ -36,7 +36,7 @@ The latest release of ODE is, **ODE 0.1**. This first ODE release has been teste
 
 > Check the log,
 ```
-  > vi /var/logs/ode_install.log
+  > vi /var/log/ode_install.log
 ```
 > Run web UI,
 ```
@@ -45,11 +45,11 @@ The latest release of ODE is, **ODE 0.1**. This first ODE release has been teste
 
 ### <i class="icon-file"></i> AWS Images
 
-You may also use the pre-built ODE images (medium and large systems) on AWS for quick installation or evaluation.
+You may also use the pre-built ODE images (medium and large systems) on AWS for quick installation or evaluation. You can search for "opallios" in the Community AMIs for these images.
 
-* Ubuntu 12.04 Med -
-* Ubuntu 14.04 Large -
-* RedHat 6.6 Med -
+* Ubuntu 12.04 Med - ODE-ubuntu-1204-med-Opallios
+* Ubuntu 14.04 Large - ODE-ubuntu-1404-large-Opallios
+* RedHat 6.6 Med - ODE-rhel-66-med-Opallios
 
 elsa
 ====
