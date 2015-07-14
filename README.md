@@ -1,6 +1,6 @@
 ODE
 ===================
-This forked branch is for Opallios distribution of ELSA, ODE. [ELSA](https://github.com/mcholste/elsa) is a log management and analytical system. Some of the key changes so far include, running Starman as the default http server, fixes in install script to be more reliable, adding http server watchdog. ODE 0.1 can be installed either as packages or image. Please refer to http://www.opalliosode.org for more details on ODE.
+This forked branch is for Opallios distribution of ELSA, ODE. [ELSA](https://github.com/mcholste/elsa) is a log management and analytical system. Some of the key changes so far include, running Starman as the default http server, fixes in install script to be more reliable, adding http server watchdog. ODE 0.1 can be installed either as packages or image. Please refer to [opalliosode.org](http://www.opalliosode.org) for more details on ODE.
 
 Getting Started
 -------------
@@ -41,6 +41,19 @@ The latest release of ODE is, **ODE 0.1**. This first ODE release has been teste
 > Run web UI,
 ```
 > http://<ip>
+```
+
+#### Removing Packages
+
+In case you want to remove the installed package. Note, this will delete all the ode related data and configuration on your machine.
+
+> Debian (ubuntu),
+```
+  > apt-get --purge autoremove ode
+```
+> RPM (RHEL/Centos),
+```
+> yum remove ode
 ```
 
 ### <i class="icon-file"></i> AWS Images

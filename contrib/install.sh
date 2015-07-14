@@ -50,6 +50,8 @@ EVENTLOG_VER="0.2.13"
 SYSLOG_VER="3.4.7"
 GEOIP_DIR="/usr/share/GeoIP/"
 APACHE="apache2"
+HTTP_SERVER="starman"
+HTTP_SERVICE="starman"
 
 if [ -f "/sbin/md5" ]; then
 	MD5SUM="/sbin/md5";
@@ -134,6 +136,13 @@ echo "Assuming distro to be $DISTRO"
 MYSQL_PASS_SWITCH=""
 if [ "$MYSQL_ROOT_PASS" != "" ]; then
     MYSQL_PASS_SWITCH="-p$MYSQL_ROOT_PASS"
+fi
+
+if [ "$HTTP_SERVER" = "apache" ]; then
+    HTTP_SERVICE="$APACHE"
+else
+    HTTP_SERVER="starman"
+    HTTP_SERVICE="starman"
 fi
 
 check_node_installed(){
@@ -1241,19 +1250,31 @@ ubuntu_set_apache(){
 	
 	chown -R $WEB_USER "$DATA_DIR/elsa/log"
 	
-	# Ensure that Apache has the right prefork settings
-	APACHE_CONF="/etc/apache2/apache2.conf"
+	#Apache 2.4 has different conf file compared to Apache 2.2
+    APACHE_CONF="/etc/apache2/apache2.conf"
+	APACHE_PARAM="MaxRequestsPerChild"
+	if [ -f /etc/apache2/mods-available/mpm_prefork.conf ]; then
+	  APACHE_CONF="/etc/apache2/mods-available/mpm_prefork.conf"
+	  APACHE_PARAM="MaxConnectionsPerChild"
+	fi	
+	
 	cp $APACHE_CONF "$APACHE_CONF.elsabak"
-	#set_apache_tuning $APACHE_CONF "mpm_prefork_module";
-	#service apache2 restart
-	#enable_service "apache2"
+	set_apache_tuning $APACHE_CONF "mpm_prefork_module" $APACHE_PARAM;
+	
+	# Ensure that Apache has the right prefork settings
+	if [ "$HTTP_SERVER" = "apache" ]; then
+       service apache2 restart
+	   enable_service "apache2"
+    fi
+    
 	return $?
 }
 
 set_apache_tuning(){
 	FILE=$1
 	MODULE=$2
-	perl -le 'use Apache::Admin::Config; my $ap = new Apache::Admin::Config("$ARGV[0]"); my @ar = $ap->select(-name => "IfModule", -value => "$MODULE"); use Data::Dumper; $ar[0]->directive("MaxRequestsPerChild")->set_value(2); $ap->save();' $FILE
+	PARAMETER=$3
+	perl -le 'use Apache::Admin::Config; my $ap = new Apache::Admin::Config("$ARGV[0]"); my @ar = $ap->select(-name => "IfModule", -value => "$MODULE"); use Data::Dumper; $ar[0]->directive("$PARAMETER")->set_value(2); $ap->save();' $FILE
 }
 
 centos_set_apache(){
@@ -1288,10 +1309,13 @@ centos_set_apache(){
 	# Ensure that Apache has the right prefork settings
 	APACHE_CONF="/etc/httpd/conf/httpd.conf"
 	cp $APACHE_CONF "$APACHE_CONF.elsabak"
-	#set_apache_tuning $APACHE_CONF "prefork.c";
+	set_apache_tuning $APACHE_CONF "mpm_prefork_module" "MaxRequestsPerChild";
 	
-	#service httpd restart
-	#enable_service "httpd"
+	if [ "$HTTP_SERVER" = "apache" ]; then
+	   service httpd restart
+	   enable_service "httpd"
+	fi
+
 	# Set firewall
 	#echo "opening firewall port 80" &&
 	#cp /etc/sysconfig/iptables /etc/sysconfig/iptables.bak.elsa &&
@@ -1338,15 +1362,17 @@ freebsd_set_apache(){
 # Install Starman
 ############
 set_starman(){
-  echo "Installing starman.."
-  cpanm -n Starman
+  if [ "$HTTP_SERVER" = "starman" ]; then
+    echo "Installing starman.."
+    cpanm -n Starman
   
-  echo "Copy starman to init.d directory.."
-  cp $BASE_DIR/elsa/contrib/starman $INIT_DIR
+    echo "Copy starman to init.d directory.."
+    cp $BASE_DIR/elsa/contrib/starman $INIT_DIR
   
-  service $APACHE stop
-  enable_service "starman"
-  service starman restart
+    service $APACHE stop
+    enable_service "starman"
+    service starman restart
+  fi
   
   return $?
 }
@@ -1360,6 +1386,9 @@ set_cron(){
 		echo "Cron already installed"
 		return 0;
 	fi
+	
+	#change the http service name
+	sed -i -e "s/xxx/${HTTP_SERVICE}/g" $BASE_DIR/elsa/contrib/http_monitor.sh
 	
 	echo "* * * * * perl $BASE_DIR/elsa/web/cron.pl -c /etc/elsa_web.conf > /dev/null 2>&1" >> $CRONTAB_DIR/root &&
 	echo "*/5 * * * * $BASE_DIR/elsa/contrib/http_monitor.sh  > /dev/null 2>&1" >> $CRONTAB_DIR/root &&
