@@ -3,15 +3,43 @@ YAHOO.ELSA.Charts = [];
 YAHOO.ELSA.Chart = function(){};
 YAHOO.ELSA.Chart.registeredCallbacks = {};
 
-YAHOO.ELSA.Chart.open_flash_chart_data = function(p_iId){
-    try {
-        logger.log('returning chart data for id:' + p_iId, YAHOO.ELSA.Charts[p_iId]);
-        return YAHOO.lang.JSON.stringify(YAHOO.ELSA.Charts[p_iId].cfg);
-    }
-    catch (e){
-        logger.log('exception: ' + e);
-    }
-}
+YAHOO.namespace('YAHOO.ODE.Chart');
+
+YAHOO.ODE.Chart = function() {
+
+	Chart.defaults.global.scaleOverride = true;
+	Chart.defaults.global.scaleSteps = 4;
+	Chart.defaults.global.scaleStepWidth = 250;
+	Chart.defaults.global.scaleStartValue = 0;
+	Chart.defaults.global.scaleLineColor = "rgba(0,0,0,0.5)";
+
+	return {
+		getPalette_a: function() {
+			var a_rgb = [ "#1f77b4", "#aec7e8", "#ff7f0e", "#ffbb78", "#2ca02c", "#98df8a", "#d62728", "#ff9896" ].reverse();
+
+			var mk_rgba = function(r, g, b, a) {
+				return "rgba(" + r + ", " + g + ", " + b + ", " + a + ")";
+			};
+
+			return a_rgb.map(function(c) {
+				var r = parseInt(c.substr(1, 2), 16);
+				var g = parseInt(c.substr(3, 2), 16);
+				var b = parseInt(c.substr(5, 2), 16);
+				return [mk_rgba(r,g,b,0.5), mk_rgba(r,g,b,0.8), mk_rgba(r,g,b,0.75), mk_rgba(r,g,b,1)];
+			} );
+		},
+		getPalette: function() {
+			return YAHOO.ODE.Chart.getPalette_a().map(function(c) {
+				return {
+					fillColor: c[0],
+					strokeColor: c[1],
+					highlightFill: c[2],
+					highlightStroke: c[3]
+				};
+			} );
+		}
+	};
+}();
 
 // Auto-graph given a graph type, title, and AoH of data
 YAHOO.ELSA.Chart.Auto = function(p_oArgs){
@@ -22,24 +50,17 @@ YAHOO.ELSA.Chart.Auto = function(p_oArgs){
     logger.log('given container id: ' + p_oArgs.container);
     var id = YAHOO.ELSA.Charts.length;
     this.id = id;
-    this.colorPalette = [ {
-        fillColor: "rgba(151,187,205,0.5)",
-        strokeColor: "rgba(151,187,205,0.8)",
-        highlightFill: "rgba(151,187,205,0.75)",
-        highlightStroke: "rgba(151,187,205,1)"
-    }, {
-        fillColor: "rgba(219,147,175,0.5)",
-        strokeColor: "rgba(219,147,175,0.8)",
-        highlightFill: "rgba(219,147,175,0.75)",
-        highlightStroke: "rgba(219,147,175,1)"
-    } ];
+    this.colorPalette = YAHOO.ODE.Chart.getPalette();
 
     this.type = p_oArgs.type;
+    console.log("Chart type: " + this.type);
     // Scrub nulls
     // Figure out columns using the first row
     var aElements = [];
     var iCounter = 0;
     var iColorPaletteLength = this.colorPalette.length;
+    var ymax = null;
+    var barCount = 0;
     for (var key in p_oArgs.data){
         if (key == 'x'){
             continue;
@@ -62,6 +83,8 @@ YAHOO.ELSA.Chart.Auto = function(p_oArgs){
                 aValues.push(val);
             }
         }
+	ymax = Math.max.apply(ymax, aValues);
+	barCount += aValues.length;
         var thisColor = this.colorPalette[((iColorPaletteLength - (iCounter % iColorPaletteLength)) - 1)];
         aElements.push({
             fillColor: thisColor.fillColor,
@@ -73,6 +96,22 @@ YAHOO.ELSA.Chart.Auto = function(p_oArgs){
         });
         iCounter++;
     }
+    var stepBase = Math.pow(10, Math.floor(Math.log10(ymax)) - 1);
+    var fact = [1, 2, 5, 10];
+    var steps;
+    var stepVal;
+    for(var i = 0; i < fact.length; ++i) {
+	    steps = Math.floor(ymax / stepBase / fact[i]);
+	    if (steps < 8) {
+		    stepVal = stepBase * fact[i];
+		    break;
+	    }
+    }
+    var opts = {
+		scaleFontSize: 10,
+	    scaleSteps: steps,
+	    scaleStepWidth: stepVal
+    };
 
     // calculate label steps
     var iXLabelSteps = 1;
@@ -80,7 +119,7 @@ YAHOO.ELSA.Chart.Auto = function(p_oArgs){
         iXLabelSteps = parseInt(p_oArgs.data.x.length / 10);
     }
     var aLabels = [];
-    for (var i = 0; i < p_oArgs.data.x.length; i += iXLabelSteps){
+    for (var i = 0; i < p_oArgs.data.x.length; ++i){
         aLabels.push(p_oArgs.data.x[i]);
     }
 
@@ -105,22 +144,34 @@ YAHOO.ELSA.Chart.Auto = function(p_oArgs){
 
     // create a div within the given container so we can append the "Save As..." link
     var outerContainerDiv = YAHOO.util.Dom.get(p_oArgs.container);
+	outerContainerDiv.setAttribute('class', 'outer-chart-div');
     var linkDiv = document.createElement('div');
     linkDiv.id = p_oArgs.container + '_link';
+	/*
     var saveLink = document.createElement('a');
     saveLink.setAttribute('href', '#');
     saveLink.innerHTML = 'Save Chart As...';
     var aEl = new YAHOO.util.Element(saveLink);
     aEl.on('click', YAHOO.ELSA.Chart.saveImage, this.id);
     linkDiv.appendChild(saveLink);
+	*/
+	var titleEl = document.createElement('h3');
+	titleEl.innerHTML = p_oArgs.title;
+	linkDiv.appendChild(titleEl);
     outerContainerDiv.appendChild(linkDiv);
 
     var containerDiv = document.createElement('div');
     containerDiv.id = p_oArgs.container + '_container';
+	containerDiv.setAttribute('class', 'chart-div');
+	var legendDiv = document.createElement('div');
+	containerDiv.appendChild(legendDiv);
     var canvasEl = document.createElement('canvas');
     canvasEl.id = p_oArgs.container + '_canvas';
     containerDiv.appendChild(canvasEl);
     outerContainerDiv.appendChild(containerDiv);
+	var tblEl = outerContainerDiv.previousSibling;
+	tblEl.style.height = '300px';
+	tblEl.style.overflow = 'auto';
     this.container = containerDiv.id;
 
     var ctx = canvasEl.getContext("2d");
@@ -129,33 +180,43 @@ YAHOO.ELSA.Chart.Auto = function(p_oArgs){
         datasets: aElements
     };
 
+	logger.log('CHART DATA: ' + JSON.stringify(data));
     logger.log('outerContainerDiv', outerContainerDiv);
     try {
         var iWidth = 1000;
         if (p_oArgs.width){
             iWidth = p_oArgs.width;
         }
-        var iHeight = 300;
+		var cWidth = iWidth;
+		if (40 + barCount * 21 > iWidth) {
+			cWidth = 40 + barCount * 21;
+		}
+        var iHeight = 250;
         if (p_oArgs.height){
             iHeight = p_oArgs.height;
         }
-        canvasEl.style.height = iHeight + "px";
-        canvasEl.style.width = iWidth + "px";
+        ctx.canvas.height = iHeight;
+        ctx.canvas.width = cWidth;
+		canvasEl.style.width = cWidth + "px";
+		outerContainerDiv.style.width = iWidth + "px";
     }
     catch (e){
         YAHOO.ELSA.Error(e);
     }
 
-    function makeChart(ctx, type, data, opts) {
-        opts = opts || {};
-        if ('bar' == type) {
-            return new Chart(ctx).Bar(data, opts);
-        }
-        return new Chart(ctx).Line(data, opts);
-    };
-
-    var chart = makeChart(ctx, this.type, data, {});
+    var chart = YAHOO.ODE.Chart.makeChart(ctx, this.type, data, opts);
+	legendDiv.innerHTML = chart.generateLegend();
     logger.log('element: ', YAHOO.util.Dom.get(this.container));
+};
+
+YAHOO.ODE.Chart.makeChart = function(ctx, type, data, opts) {
+	opts = opts || {};
+	opts['barStrokeWidth'] = 1;
+	opts['barValueSpacing'] = 2;
+	if ('bar' == type) {
+		return new Chart(ctx).Bar(data, opts);
+	}
+	return new Chart(ctx).Line(data, opts);
 };
 
 YAHOO.ELSA.Chart.saveImage = function (p_oEvent, p_iId){
