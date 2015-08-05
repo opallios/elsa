@@ -1005,6 +1005,12 @@ YAHOO.ELSA.Chart.prototype.makeSimpleChart = function(){
 	chartDiv.appendChild(canvasEl);
 	var ctx = canvasEl.getContext("2d");
 	chartDiv.style.float = 'left';
+	var hElem = document.createElement('h3');
+	hElem.innerHTML = this.queries[0].query_string;
+	hElem.style['text-align'] = 'center';
+	hElem.style['margin-bottom'] = 0;
+	var contDiv = this.chart_el.parentElement;
+	contDiv.insertBefore(hElem, this.chart_el);
 	if ('PieChart' == this.type) {
 		canvasEl.setAttribute('class', 'pie-chart');
 		var legendDiv = document.createElement('div');
@@ -1021,7 +1027,6 @@ YAHOO.ELSA.Chart.prototype.makeSimpleChart = function(){
 		legendDiv.style.width = (25 + legendDiv.offsetWidth) + 'px';
 		legendDiv.style['margin-left'] = '100px';
 	} else if ('ColumnChart' == this.type) {
-		var datasets = [];
 		var label = dt.getColumnLabel(1);
 		var labels = [];
 		var values = [];
