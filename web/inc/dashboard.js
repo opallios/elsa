@@ -905,7 +905,6 @@ YAHOO.ELSA.Chart.prototype.mergeDataTables = function(p_oAddTable, p_sLabel){
 	
 YAHOO.ELSA.Chart.prototype.draw = function(){
 	if (this.isTimeChart){
-		console.log('timechart');
 		this.makeTimeChart();
 	}
 	else if (this.type == 'GeoChart'){
@@ -983,20 +982,103 @@ YAHOO.ELSA.Chart.prototype.getOptions = function(){
 
 YAHOO.ELSA.Chart.prototype.makeSimpleChart = function(){
 	logger.log('makeSimpleChart');
-	this.wrapper = new google.visualization.ChartWrapper({
-		dataTable: this.dataTable,
-		containerId: this.chart_el,
-		chartType: this.type,
-		options: this.getOptions()
-	});
-	
-	var oSelf = this;
-	google.visualization.events.addListener(this.wrapper, 'ready', function(){
-		google.visualization.events.addListener(oSelf.wrapper.getChart(), 'select', function(){ oSelf.selectHandler() });
-	});
-	
-	this.wrapper.draw();
-	logger.log(this.wrapper);
+	var colorPalette = YAHOO.ODE.Chart.getPalette_a();
+	var paletteLength = colorPalette.length;
+	var data = [];
+	var i = 0;
+	var dt = this.dataTable;
+	var n = dt.getNumberOfRows();
+	for(var i = 0; i < n; ++i) {
+		var label = dt.getValue(i, 0);
+		var value = dt.getValue(i, 1);
+		var thisColor = colorPalette[((paletteLength - ((i+6) % paletteLength)) - 1)];
+		data.push( {
+			label: label,
+			value: value,
+			color: thisColor[0],
+			highlight: thisColor[3]
+		} );
+	}
+	var chartDiv = document.createElement('div');
+	this.chart_el.appendChild(chartDiv);
+	var canvasEl = document.createElement('canvas');
+	chartDiv.appendChild(canvasEl);
+	var ctx = canvasEl.getContext("2d");
+	chartDiv.style.float = 'left';
+	if ('PieChart' == this.type) {
+		canvasEl.setAttribute('class', 'pie-chart');
+		var legendDiv = document.createElement('div');
+		legendDiv.setAttribute('class', 'pie-chart');
+		this.chart_el.appendChild(legendDiv);
+		legendDiv.style.overflow = 'auto';
+		legendDiv.style.height = '250px';
+		canvasEl.height = 250;
+		canvasEl.width = 400;
+		canvasEl.style.width = '400px';
+		chartDiv.style.width = '420px';
+		var myPieChart = new Chart(ctx).Pie(data, {});
+		legendDiv.innerHTML = myPieChart.generateLegend();
+		legendDiv.style.width = (25 + legendDiv.offsetWidth) + 'px';
+		legendDiv.style['margin-left'] = '100px';
+	} else if ('ColumnChart' == this.type) {
+		var datasets = [];
+		var label = dt.getColumnLabel(1);
+		var labels = [];
+		var values = [];
+		var barCount = data.length;
+		var ymax = 0;
+		var thisColor = colorPalette[paletteLength - 3];
+		for(var i = 0; i < data.length; ++i) {
+			var val = data[i]["value"];
+			if (val > ymax) { ymax = val; }
+			values.push(val);
+			labels.push(data[i]["label"]);
+		}
+		data = {
+			labels: labels,
+			datasets: [ {
+				data: values,
+				label: label,
+				fillColor: thisColor[0],
+				strokeColor: thisColor[1],
+				highlightFill: thisColor[2],
+				highlightStroke: thisColor[3]
+			} ]
+		};
+		var opts = YAHOO.ODE.Chart.getSteps(ymax);
+		canvasEl.setAttribute('class', 'bar-chart');
+		var legendDiv = document.createElement('div');
+		legendDiv.setAttribute('class', 'bar-chart');
+		this.chart_el.appendChild(legendDiv);
+		canvasEl.height = 250;
+		var cWidth = 800;
+		if (40 + barCount * 21 > cWidth) {
+			cWidth = 40 + barCount * 21;
+		}
+		canvasEl.width = cWidth;
+		chartDiv.style.width = "820px";
+		chartDiv.style.overflow = 'auto';
+		opts['barStrokeWidth'] = 1;
+		opts['barValueSpacing'] = 2;
+		var myBarChart = new Chart(ctx).Bar(data, opts);
+		legendDiv.innerHTML = myBarChart.generateLegend();
+	} else {
+
+		this.wrapper = new google.visualization.ChartWrapper({
+			dataTable: this.dataTable,
+			containerId: this.chart_el,
+			chartType: this.type,
+			options: this.getOptions()
+		});
+
+		var oSelf = this;
+		google.visualization.events.addListener(this.wrapper, 'ready', function(){
+			google.visualization.events.addListener(oSelf.wrapper.getChart(), 'select', function(){ oSelf.selectHandler() });
+		});
+
+		this.wrapper.draw();
+		logger.log(this.wrapper);
+	}
 }
 
 YAHOO.ELSA.Chart.prototype.makeGeoChart = function(){
