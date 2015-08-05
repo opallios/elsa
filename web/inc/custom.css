@@ -392,20 +392,10 @@ ul.pie-legend li span {
 	height: 1em;
 	margin-right: 0.5em;
 }
-div.chart-div>div {
-	margin-left: 40px;
-}
-div.chart-div>div,
 div.chart-div>canvas {
-	display: inline-block;
-}
-div.chart-div>canvas {
-	margin: auto 50px;
+	margin: auto 10px;
 }
 div.outer-chart-div>div>h3 {
 	float: right;
 	width: 65%;
-}
-div.outer-chart-div {
-	overflow: auto;
 }

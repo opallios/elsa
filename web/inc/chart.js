@@ -12,6 +12,7 @@ YAHOO.ODE.Chart = function() {
 	Chart.defaults.global.scaleStepWidth = 250;
 	Chart.defaults.global.scaleStartValue = 0;
 	Chart.defaults.global.scaleLineColor = "rgba(0,0,0,0.5)";
+	Chart.defaults.global.tooltipTemplate = "<%if (label){%>Key:<%=label%>; Count:<%}%><%= value %>";
 
 	return {
 		getPalette_a: function() {
@@ -37,6 +38,23 @@ YAHOO.ODE.Chart = function() {
 					highlightStroke: c[3]
 				};
 			} );
+		},
+		getSteps: function(ymax) {
+			var stepBase = Math.pow(10, Math.floor(Math.log10(ymax)) - 1);
+			var fact = [1, 2, 5, 10];
+			var steps;
+			var stepVal;
+			for(var i = 0; i < fact.length; ++i) {
+				steps = Math.floor(ymax / stepBase / fact[i]);
+				if (steps < 10) {
+					stepVal = stepBase * fact[i];
+					break;
+				}
+			}
+			return {
+				scaleStepWidth: stepVal,
+				scaleSteps: steps
+			};
 		}
 	};
 }();
@@ -53,7 +71,6 @@ YAHOO.ELSA.Chart.Auto = function(p_oArgs){
     this.colorPalette = YAHOO.ODE.Chart.getPalette();
 
     this.type = p_oArgs.type;
-    console.log("Chart type: " + this.type);
     // Scrub nulls
     // Figure out columns using the first row
     var aElements = [];
@@ -96,22 +113,8 @@ YAHOO.ELSA.Chart.Auto = function(p_oArgs){
         });
         iCounter++;
     }
-    var stepBase = Math.pow(10, Math.floor(Math.log10(ymax)) - 1);
-    var fact = [1, 2, 5, 10];
-    var steps;
-    var stepVal;
-    for(var i = 0; i < fact.length; ++i) {
-	    steps = Math.floor(ymax / stepBase / fact[i]);
-	    if (steps < 8) {
-		    stepVal = stepBase * fact[i];
-		    break;
-	    }
-    }
-    var opts = {
-		scaleFontSize: 10,
-	    scaleSteps: steps,
-	    scaleStepWidth: stepVal
-    };
+    var opts = YAHOO.ODE.Chart.getSteps(ymax);
+	opts['scaleFontSize'] = 10;
 
     // calculate label steps
     var iXLabelSteps = 1;
@@ -168,11 +171,21 @@ YAHOO.ELSA.Chart.Auto = function(p_oArgs){
     var canvasEl = document.createElement('canvas');
     canvasEl.id = p_oArgs.container + '_canvas';
     containerDiv.appendChild(canvasEl);
+	outerContainerDiv.style.float = 'none';
+	outerContainerDiv.style.display = 'inline-block';
     outerContainerDiv.appendChild(containerDiv);
 	var tblEl = outerContainerDiv.previousSibling;
-	tblEl.style.height = '300px';
-	tblEl.style.overflow = 'auto';
+	tblEl.style['max-height'] = '300px';
+	tblEl.style['overflow-y'] = 'auto';
+	tblEl.style.display = 'inline-block';
+	tblEl.style.float = 'none';
+	tblEl.style['vertical-align'] = 'top';
     this.container = containerDiv.id;
+	var parDiv = outerContainerDiv.parentElement;
+	parDiv.style['white-space'] = 'nowrap';
+	var wrapperDiv = parDiv.parentElement;
+	wrapperDiv.style.width = '99%';
+	wrapperDiv.style.overflow = 'auto';
 
     var ctx = canvasEl.getContext("2d");
     var data = {
@@ -180,7 +193,6 @@ YAHOO.ELSA.Chart.Auto = function(p_oArgs){
         datasets: aElements
     };
 
-	logger.log('CHART DATA: ' + JSON.stringify(data));
     logger.log('outerContainerDiv', outerContainerDiv);
     try {
         var iWidth = 1000;
@@ -211,9 +223,9 @@ YAHOO.ELSA.Chart.Auto = function(p_oArgs){
 
 YAHOO.ODE.Chart.makeChart = function(ctx, type, data, opts) {
 	opts = opts || {};
-	opts['barStrokeWidth'] = 1;
-	opts['barValueSpacing'] = 2;
 	if ('bar' == type) {
+		opts['barStrokeWidth'] = 1;
+		opts['barValueSpacing'] = 2;
 		return new Chart(ctx).Bar(data, opts);
 	}
 	return new Chart(ctx).Line(data, opts);
