@@ -905,6 +905,7 @@ YAHOO.ELSA.Chart.prototype.mergeDataTables = function(p_oAddTable, p_sLabel){
 	
 YAHOO.ELSA.Chart.prototype.draw = function(){
 	if (this.isTimeChart){
+		console.log('timechart');
 		this.makeTimeChart();
 	}
 	else if (this.type == 'GeoChart'){
@@ -1005,12 +1006,11 @@ YAHOO.ELSA.Chart.prototype.makeSimpleChart = function(){
 	var ctx = canvasEl.getContext("2d");
 	var hElem = document.createElement('h3');
 	hElem.innerHTML = this.queries[0].query_string;
-	hElem.style['text-align'] = 'center';
 	hElem.style['margin-bottom'] = 0;
 	this.chart_el.appendChild(hElem);
 	this.chart_el.appendChild(chartDiv);
 	var chartClass = 'dbchart';
-	if ('PieChart' == this.type) {
+	if (1 && 'PieChart' == this.type) {
 		chartClass = chartClass + ' pie-chart';
 		var legendDiv = document.createElement('div');
 		legendDiv.setAttribute('class', 'legend');
@@ -1020,20 +1020,25 @@ YAHOO.ELSA.Chart.prototype.makeSimpleChart = function(){
 		canvasEl.height = 150;
 		canvasEl.width = 160;
 		canvasEl.style.width = '160px';
+		hElem.style['padding-left'] = '100px';
 		var myPieChart = new Chart(ctx).Pie(data, {});
 		legendDiv.innerHTML = myPieChart.generateLegend();
-		var legendWidth = legendDiv.offsetWidth;
-		legendDiv.style.width = (15 + legendWidth) + 'px';
-		chartDiv.style.width = (legendWidth + 220) + 'px';
-		legendDiv.style['margin-left'] = '15px';
-	} else if ('ColumnChart' == this.type) {
+        var legendWidth = legendDiv.offsetWidth;
+		if (legendWidth > 120) {
+			legendWidth = 120;
+		}
+        legendDiv.style.width = (15 + legendWidth) + 'px';
+        chartDiv.style.width = (legendWidth + 220) + 'px';
+        legendDiv.style['margin-left'] = '15px';
+	} else if (1 && 'ColumnChart' == this.type) {
+		var datasets = [];
 		chartClass = chartClass + ' bar-chart';
 		var label = dt.getColumnLabel(1);
 		var labels = [];
 		var values = [];
 		var barCount = data.length;
 		var ymax = 0;
-		var thisColor = colorPalette[paletteLength - 3];
+		var thisColor = colorPalette[paletteLength - 5];
 		for(var i = 0; i < data.length; ++i) {
 			var val = data[i]["value"];
 			if (val > ymax) { ymax = val; }
@@ -1054,19 +1059,19 @@ YAHOO.ELSA.Chart.prototype.makeSimpleChart = function(){
 		var opts = YAHOO.ODE.Chart.getSteps(ymax);
 		var legendDiv = document.createElement('div');
 		chartDiv.appendChild(legendDiv);
-		var legendWidth = legendDiv.offsetWidth;
-		canvasEl.height = 150;
-		var cWidth = 400;
-		if (20 + barCount * 6.8 > cWidth) {
-			cWidth = 20 + barCount * 6.8;
+        var legendWidth = legendDiv.offsetWidth;
+        canvasEl.height = 150;
+        var cWidth = 400;
+        if (20 + barCount * 6.8 > cWidth) {
+            cWidth = 20 + barCount * 6.8;
 		}
 		canvasEl.width = cWidth;
-		opts['barStrokeWidth'] = 1;
-		opts['barValueSpacing'] = 2;
+		hElem.style['padding-left'] = (cWidth*0.5)+'px';
+		logger.log("OPTIONS: " + JSON.stringify(opts));
 		var myBarChart = new Chart(ctx).Bar(data, opts);
 		legendDiv.innerHTML = myBarChart.generateLegend();
-		chartDiv.style.width = (45 + cWidth + legendWidth) + 'px';
-		legendDiv.style.width = (15 + legendWidth) + 'px';
+        chartDiv.style.width = (45 + cWidth + legendWidth) + 'px';
+        legendDiv.style.width = (15 + legendWidth) + 'px';
 	} else {
 
 		this.wrapper = new google.visualization.ChartWrapper({

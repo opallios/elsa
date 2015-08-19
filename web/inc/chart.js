@@ -12,11 +12,19 @@ YAHOO.ODE.Chart = function() {
 	Chart.defaults.global.scaleStepWidth = 250;
 	Chart.defaults.global.scaleStartValue = 0;
 	Chart.defaults.global.scaleLineColor = "rgba(0,0,0,0.5)";
+	Chart.defaults.global.scaleFontSize = 10;
 	Chart.defaults.global.tooltipTemplate = "<%if (label){%>Key:<%=label%>; Count:<%}%><%= value %>";
+	Chart.defaults.Bar.barStrokeWidth = 1;
+	Chart.defaults.Bar.barValueSpacing = 2;
+	Chart.defaults.Bar.scaleShowGridLines = true;
+	Chart.defaults.Bar.scaleGridLineColor = "rgba(0,0,0,0.2)";
+	Chart.defaults.Bar.showXLabels = 10;
+	Chart.defaults.Bar.legendTemplate = "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>";;
+	Chart.defaults.Pie.legendTemplate = "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<segments.length; i++){%><li><span style=\"background-color:<%=segments[i].fillColor%>\"></span><%if(segments[i].label){%><%=segments[i].label%><%}%></li><%}%></ul>";
 
 	return {
 		getPalette_a: function() {
-			var a_rgb = [ "#1f77b4", "#aec7e8", "#ff7f0e", "#ffbb78", "#2ca02c", "#98df8a", "#d62728", "#ff9896" ].reverse();
+			var a_rgb = [ "#5f1794", "#aec7e8", "#ff7f0e", "#ffbb78", "#2ca02c", "#98df8a", "#d62728", "#ff9896" ].reverse();
 
 			var mk_rgba = function(r, g, b, a) {
 				return "rgba(" + r + ", " + g + ", " + b + ", " + a + ")";
@@ -26,7 +34,7 @@ YAHOO.ODE.Chart = function() {
 				var r = parseInt(c.substr(1, 2), 16);
 				var g = parseInt(c.substr(3, 2), 16);
 				var b = parseInt(c.substr(5, 2), 16);
-				return [mk_rgba(r,g,b,0.5), mk_rgba(r,g,b,0.8), mk_rgba(r,g,b,0.75), mk_rgba(r,g,b,1)];
+				return [mk_rgba(r,g,b,0.7), mk_rgba(r,g,b,0.8), mk_rgba(r,g,b,0.85), mk_rgba(r,g,b,1)];
 			} );
 		},
 		getPalette: function() {
@@ -114,7 +122,6 @@ YAHOO.ELSA.Chart.Auto = function(p_oArgs){
         iCounter++;
     }
     var opts = YAHOO.ODE.Chart.getSteps(ymax);
-	opts['scaleFontSize'] = 10;
 
     // calculate label steps
     var iXLabelSteps = 1;
@@ -165,7 +172,7 @@ YAHOO.ELSA.Chart.Auto = function(p_oArgs){
 
     var containerDiv = document.createElement('div');
     containerDiv.id = p_oArgs.container + '_container';
-	containerDiv.setAttribute('class', 'chart-div');
+//	containerDiv.setAttribute('class', 'chart-div');
 	var legendDiv = document.createElement('div');
 	containerDiv.appendChild(legendDiv);
     var canvasEl = document.createElement('canvas');
@@ -175,11 +182,14 @@ YAHOO.ELSA.Chart.Auto = function(p_oArgs){
 	outerContainerDiv.style.display = 'inline-block';
     outerContainerDiv.appendChild(containerDiv);
 	var tblEl = outerContainerDiv.previousSibling;
-	tblEl.style['max-height'] = '300px';
 	tblEl.style['overflow-y'] = 'auto';
 	tblEl.style.display = 'inline-block';
 	tblEl.style.float = 'none';
 	tblEl.style['vertical-align'] = 'top';
+	setTimeout(function() {
+		tblEl.style.width = (15 + tblEl.offsetWidth) + 'px';
+		tblEl.style['max-height'] = '300px';
+	}, 100);
     this.container = containerDiv.id;
 	var parDiv = outerContainerDiv.parentElement;
 	parDiv.style['white-space'] = 'nowrap';
@@ -200,8 +210,18 @@ YAHOO.ELSA.Chart.Auto = function(p_oArgs){
             iWidth = p_oArgs.width;
         }
 		var cWidth = iWidth;
-		if (40 + barCount * 21 > iWidth) {
-			cWidth = 40 + barCount * 21;
+		if (barCount <= 10) {
+			if (barCount <= 5) {
+				cWidth = 40 + barCount * 190;
+				if (cWidth < 350) {
+					cWidth = 350;
+				}
+				iWidth = cWidth;
+			}
+			opts['barValueSpacing'] = (cWidth - 40) * 0.2 / barCount;
+		}
+		if (40 + barCount * 9.6 > iWidth) {
+			cWidth = 40 + barCount * 9.6;
 		}
         var iHeight = 250;
         if (p_oArgs.height){
@@ -224,8 +244,6 @@ YAHOO.ELSA.Chart.Auto = function(p_oArgs){
 YAHOO.ODE.Chart.makeChart = function(ctx, type, data, opts) {
 	opts = opts || {};
 	if ('bar' == type) {
-		opts['barStrokeWidth'] = 1;
-		opts['barValueSpacing'] = 2;
 		return new Chart(ctx).Bar(data, opts);
 	}
 	return new Chart(ctx).Line(data, opts);
