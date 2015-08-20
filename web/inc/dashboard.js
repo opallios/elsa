@@ -1269,6 +1269,123 @@ YAHOO.ELSA.Chart.prototype.makeTimeChart = function(){
 //}
 
 YAHOO.ELSA.Chart.prototype.openEditor = function(p_oEvent){
+	logger.log("Edit chart called");
+	var handleCancel = function(){ this.hide() };
+	var id = 0;
+	var oSelf = this;
+	var sButtonId = "chart_edit_type_" + id;
+	var sId = "chart_type_hid_" + id;
+	var handleSubmit = function(){
+        var oInputEl = YAHOO.util.Dom.get(sId);
+        var cType = oInputEl.value;
+        logger.log("oSelf is a:"+typeof(oSelf));
+        var keys = [];
+        for(var k in oSelf) {
+            keys.push(k); //""+k+":"+oSelf[k]);
+        }
+        logger.log("oSelf="+keys.sort().join(", "));
+        logger.log("Chart type: " + cType);
+        var options = oSelf.getOptions();
+        logger.log("Options: " + options +
+            "JSON: " + JSON.stringify(options));
+        var oToUpdate = {
+            options: options,
+            type: cType
+        }
+        logger.log("init oToUpdate done. oSelf id="+oSelf.id);
+        var oPostData = {
+            chart_id: oSelf.id,
+            to_update: oToUpdate
+        }
+        YAHOO.ELSA.async('../Charts/update', function(){
+            logger.log('updated ok');
+        }, oPostData);
+        logger.log("Going to set chart type");
+        oSelf.type = cType;
+        logger.log("Donesetiing charttype to:"+oSelf.type);
+        oSelf.redraw();
+        oEditPanel.panel.hide();
+	};
+	var oEditPanel = YAHOO.ELSA.Panel('Edit Chart', {
+		buttons : [ {
+            text:"Submit",
+            handler: handleSubmit,
+            isDefault:true
+        },
+        {
+            text:"Cancel",
+            handler:handleCancel
+        } ]
+	} );
+	var handleSuccess = function() { oEditPanel.panel.hide() }
+	oEditPanel.panel.callback = {
+		success: handleSuccess,
+		failure: YAHOO.ELSA.Error
+	};
+	oEditPanel.panel.renderEvent.subscribe(function(){
+		oEditPanel.panel.setBody('');
+		oEditPanel.panel.setHeader('Edit Chart Appearance');
+		oEditPanel.panel.bringToTop();
+		var sFormId = oEditPanel.panel.form.id;
+		var onMenuItemClick = function(p_sType, p_aArgs, p_oItem){
+			var sText = p_oItem.cfg.getProperty("text");
+			logger.log("Args: sText" + sText + "," + p_aArgs + "," + p_oItem);
+			// Set the label of the button to be our selection
+			var oAuthButton = YAHOO.widget.Button.getButton(sButtonId);
+			oAuthButton.set('label', sText);
+			var oFormEl = YAHOO.util.Dom.get(sFormId);
+			var oInputEl = YAHOO.util.Dom.get(sId);
+			logger.log("New value: " + p_oItem.value);
+			oInputEl.setAttribute('value', p_oItem.value);
+		};
+		var aMenu = [
+			{ text:'Bar', value:'ColumnChart', onclick: { fn: onMenuItemClick } },
+            { text:'Pie', value:'PieChart', onclick: { fn: onMenuItemClick } },
+            { text:'Table', value:'Table', onclick: { fn: onMenuItemClick } },
+            { text:'Map', value:'GeoChart', onclick: { fn: onMenuItemClick } }
+        ];
+
+        var oMenuButtonCfg = {
+            id: sButtonId,
+            type: 'menu',
+            label: 'Chart Type',
+            name: sButtonId,
+            menu: aMenu
+        };
+
+        var oFormGridCfg = {
+            grid: [
+                [ {
+                    type:'text',
+                    args:'Type'
+                },
+                {
+                    type:'widget',
+                    className:'Button',
+                    args: oMenuButtonCfg
+                } ]
+            ]
+        };
+
+        var oForm = new YAHOO.ELSA.Form(oEditPanel.panel.form, oFormGridCfg);
+		var ctLabel = new Object;
+		for(var i = 0; i < aMenu.length; ++i) {
+			ctLabel[aMenu[i].value] = aMenu[i].text;
+		}
+		var oAuthButton = YAHOO.widget.Button.getButton(sButtonId);
+		oAuthButton.set('label', ctLabel[oSelf.type]);
+		var oInputEl = document.createElement('input');
+		oInputEl.id = sId;
+		oInputEl.setAttribute('type', 'hidden');
+		oInputEl.setAttribute('name', 'chart_type');
+		oInputEl.setAttribute('value', 0);
+		oForm.form.appendChild(oInputEl);
+
+	} );
+	oEditPanel.panel.render();
+	oEditPanel.panel.show();
+};
+/*
 	// Handler for the "Open Editor" button.
 	if (!this.editor){
 		this.editor = new google.visualization.ChartEditor();
@@ -1300,6 +1417,7 @@ YAHOO.ELSA.Chart.prototype.openEditor = function(p_oEvent){
 	this.editor.openDialog(oCloneChart);
 	
 }
+*/
 
 YAHOO.ELSA.Chart.prototype.editQueries = function(p_oData, p_sPathToQueryDir){
 	var oSelf = this;

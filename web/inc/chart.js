@@ -20,6 +20,7 @@ YAHOO.ODE.Chart = function() {
 	Chart.defaults.Bar.scaleGridLineColor = "rgba(0,0,0,0.2)";
 	Chart.defaults.Bar.showXLabels = 10;
 	Chart.defaults.Bar.legendTemplate = "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>";;
+	Chart.defaults.Pie.segmentStrokeWidth = 1;
 	Chart.defaults.Pie.legendTemplate = "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<segments.length; i++){%><li><span style=\"background-color:<%=segments[i].fillColor%>\"></span><%if(segments[i].label){%><%=segments[i].label%><%}%></li><%}%></ul>";
 
 	return {
