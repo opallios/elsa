@@ -411,6 +411,12 @@ div.outer-chart-div>div>h3 {
 	border-top: 0 solid #bbc;
 }
 #google_charts_tbody > tr > td {
-	border-top: 1px solid #ccd;
 	padding: 5px 0;
+}
+#tabView .yui-content {
+	background: #fff;
+	border-bottom-color: #ddd;
+}
+.google-visualization-table-table th {
+	z-index: 0 !important;
 }

@@ -664,6 +664,7 @@ YAHOO.ELSA.Chart = function(p_oArgs, p_oContainer, p_oDashboard){
 		var ctcodes = {
 			LineChart: 'Line',
 			AreaChart: 'Area',
+			BarChart: 'Bar',
 			ColumnChart: 'Column',
 			PieChart: 'Pie',
 			Doughnut: 'Doughnut',
@@ -1137,6 +1138,9 @@ YAHOO.ELSA.Chart.prototype.makeSimpleChart = function(){
 	this.chart_el.appendChild(hElem);
 	this.chart_el.appendChild(chartDiv);
 	var chartClass = 'dbchart';
+    var rCharts = this.dashboard.rows[this.y].charts.length;
+    var cdWidth = 1000 / rCharts;
+    logger.log("Row charts:"+rCharts+",cdWidth:"+cdWidth);
 	if ('PieChart' == this.type || 'Doughnut' == this.type) {
 		chartClass = chartClass + ' pie-chart';
 		var legendDiv = document.createElement('div');
@@ -1147,20 +1151,26 @@ YAHOO.ELSA.Chart.prototype.makeSimpleChart = function(){
 		canvasEl.height = 150;
 		canvasEl.width = 160;
 		canvasEl.style.width = '160px';
-		hElem.style['padding-left'] = '100px';
+		hElem.style['text-align'] = 'center';
 		var myPieChart;
 		if ('PieChart' == this.type)
 			myPieChart = new Chart(ctx).Pie(data, {});
 		else
 			myPieChart = new Chart(ctx).Doughnut(data, {});
 		legendDiv.innerHTML = myPieChart.generateLegend();
-        var legendWidth = legendDiv.offsetWidth;
-		if (legendWidth > 120) {
-			legendWidth = 120;
-		}
-        legendDiv.style.width = (15 + legendWidth) + 'px';
-        chartDiv.style.width = (legendWidth + 220) + 'px';
-        legendDiv.style['margin-left'] = '15px';
+		setTimeout(function() {
+			chartDiv.style.width = cdWidth + 'px';
+			var legendWidth = legendDiv.offsetWidth;
+			if (legendWidth > 120) {
+				legendWidth = 120;
+			}
+			legendDiv.style.width = (15 + legendWidth) + 'px';
+			legendDiv.style['margin-left'] = '15px';
+			var xtraWidth = cdWidth - legendWidth - canvasEl.width - 60;
+			if (xtraWidth > 0) {
+				canvasEl.style['margin-left'] = (xtraWidth / 2) + 'px';
+			}
+		}, 100);
 	} else if (this.type.match(/^(Area|Line|Column|Bar)Chart$/)) {
 		//'AreaChart' == this.type || 'LineChart' == this.type || 'ColumnChart' == this.type || 'BarChart' == this.type) {
 		var datasets = [];
@@ -1194,14 +1204,17 @@ YAHOO.ELSA.Chart.prototype.makeSimpleChart = function(){
 		chartDiv.appendChild(legendDiv);
         canvasEl.height = 150;
         var cWidth = 400;
+		if (cdWidth > 500) {
+			cWidth = cdWidth - 150;
+		}
 		/*
         if (20 + barCount * 6.8 > cWidth) {
             cWidth = 20 + barCount * 6.8;
 		}
 		*/
 		canvasEl.width = cWidth;
-		canvasEl.style.width = '400px';
-		hElem.style['padding-left'] = (cWidth*0.5)+'px';
+		canvasEl.style.width = cWidth + 'px';
+		hElem.style['text-align'] = 'center';
 		var myBarChart;
 		if (this.type.match('^(Column|Bar)Chart$')) {
 			opts['barValueSpacing'] = barCount > 10 ? 1 : 2;
@@ -1226,9 +1239,13 @@ YAHOO.ELSA.Chart.prototype.makeSimpleChart = function(){
 		logger.log("data:"+JSON.stringify(data));
 		legendDiv.innerHTML = myBarChart.generateLegend();
 		setTimeout(function() {
-			var legendWidth = legendDiv.offsetWidth;
-			chartDiv.style.width = (45 + 400 + legendWidth) + 'px';
-        legendDiv.style.width = (15 + legendWidth) + 'px';
+			var legendWidth = legendDiv.offsetWidth + 15;
+			chartDiv.style.width = cdWidth + 'px';
+			cnWidth = cdWidth - 40 - legendWidth;
+			logger.log("Legend Width:"+legendWidth+", chartDiv width:"+cdWidth+", canvas width:"+cnWidth);
+			canvasEl.width = cnWidth;
+			canvasEl.style.width = cnWidth + 'px';
+			legendDiv.style.width = legendWidth + 'px';
 		}, 100);
 	} else {
 

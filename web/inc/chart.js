@@ -83,7 +83,7 @@ YAHOO.ODE.Chart = function() {
 
 	return {
 		getPalette_a: function() {
-			var a_rgb = [ "#6bc2d1", "#aec7e8", "#ff7f0e", "#ffbb78", "#2ca02c", "#98df8a", "#d62728", "#ff9896" ].reverse();
+			var a_rgb = [ "#43A5B6", "#aec7e8", "#ff7f0e", "#ffbb78", "#2ca02c", "#98df8a", "#d62728", "#ff9896" ].reverse();
 
 			var mk_hsla = function(h,s,l,a) {
 				return "hsla(" + h + "," + s + "%," + l + "%," + a + ")";
