@@ -127,8 +127,24 @@ YAHOO.ODE.Chart = function() {
 				scaleStepWidth: stepVal,
 				scaleSteps: steps
 			};
+		},
+
+		ctcodes: {
+			LineChart: 'Line',
+			AreaChart: 'Area',
+			ColumnChart: 'Column',
+			PieChart: 'Pie',
+			Doughnut: 'Doughnut',
+			Table: 'Table',
+			GeoChart: 'Map'
+		},
+
+		getChartCode: function(code) {
+			return YAHOO.ODE.Chart.ctcodes[code];
 		}
+
 	};
+
 }();
 
 // Auto-graph given a graph type, title, and AoH of data

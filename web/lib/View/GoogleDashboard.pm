@@ -330,8 +330,11 @@ YAHOO.util.Event.addListener(window, "load", function(){
 </head>
 
   <body class=" yui-skin-sam">
+    <header title="Opallios Distribution of ELSA">
+      <img src="/inc/ode-logo.jpg" width="66" heigh="24">
+    </header>
    <div id="panel_root"></div>
-    <div id="google_charts"></div>
+   <div id="google_charts"></div>
   </body>
 </html>
 EOHTML

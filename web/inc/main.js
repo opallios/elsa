@@ -663,6 +663,15 @@ YAHOO.ELSA.main = function () {
 							}
 						},
 						{
+							text: 'Help',
+							helptext: 'ELSA Documentation',
+							onclick: {
+								fn: function() {
+									window.open("http://www.opallios.org");
+								}
+							}
+						},
+						{
 							text: 'About',
 							helptext: 'View ELSA version',
 							onclick: {

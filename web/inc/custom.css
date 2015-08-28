@@ -420,3 +420,22 @@ div.outer-chart-div>div>h3 {
 .google-visualization-table-table th {
 	z-index: 0 !important;
 }
+div.header img {
+	padding: 2px 5px;
+}
+#logs {
+	min-height: 500px;
+}
+div.footer {
+	width: 99%;
+	padding: 5px;
+}
+div.footer span {
+	font-size: 90%;
+}
+div.footer span.left-side {
+}
+div.footer span.right-side {
+	float: right;
+	text-align: right;
+}
