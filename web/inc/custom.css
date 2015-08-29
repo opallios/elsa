@@ -420,8 +420,20 @@ div.outer-chart-div>div>h3 {
 .google-visualization-table-table th {
 	z-index: 0 !important;
 }
+div.header {
+	background-color: rgb(168,168,168);
+	position: fixed;
+	top: 0;
+	width: 100%;
+	height: 26px;
+	z-index: 250;
+}
 div.header img {
 	padding: 2px 5px;
+	margin: 0 auto;
+}
+#menu_bar {
+	margin-top: 26px;
 }
 #logs {
 	min-height: 500px;

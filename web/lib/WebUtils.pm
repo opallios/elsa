@@ -167,7 +167,7 @@ sub get_index_body {
 </head>
 <body class=" yui-skin-sam">
     <div class="header" title="Opallios Distribution of ELSA">
-        <img src="/inc/ode-logo.jpg" width="66" heigh="24">
+        <img src="/inc/ode-logo.png" width="66" height="24">
     </div>
 <div id="menu_bar"></div>
 <div id="panel_root"></div>
@@ -182,11 +182,11 @@ sub get_index_body {
 </div>
 <div class="footer">
 <span class="left-side">
-<a href="http://www.opallios.org">Documentation</a> |
-<a href="https://groups.google.com/forum/#!forum/enterprise-log-search-and-archive">Support</a>
+<a target="_blank" href="http://www.opallios.org">Documentation</a> |
+<a target="_blank" href="https://groups.google.com/forum/#!forum/enterprise-log-search-and-archive">Support</a>
 </span>
 <span class="right-side">
-Opallios Inc. ODE 0.3
+<a target="_blank" href="http://www.opallios.com/">Opallios Inc.</a> ODE 0.3
 </span>
 </div>
 </body>

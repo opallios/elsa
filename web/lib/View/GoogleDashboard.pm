@@ -330,9 +330,9 @@ YAHOO.util.Event.addListener(window, "load", function(){
 </head>
 
   <body class=" yui-skin-sam">
-    <header title="Opallios Distribution of ELSA">
-      <img src="/inc/ode-logo.jpg" width="66" heigh="24">
-    </header>
+    <div class="header" title="Opallios Distribution of ELSA">
+      <img src="/inc/ode-logo.png" width="66" height="24">
+    </div>
    <div id="panel_root"></div>
    <div id="google_charts"></div>
   </body>
