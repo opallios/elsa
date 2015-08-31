@@ -1124,8 +1124,12 @@ YAHOO.ELSA.Chart.prototype.makeSimpleChart = function(){
 	chartDiv.appendChild(canvasEl);
 	var ctx = canvasEl.getContext("2d");
 	var hElem = document.createElement('h3');
-	var label = dt.getColumnLabel(1) || this.queries[0].query_string.replace(/.*groupby:/, '').ucfirst();
-	hElem.innerHTML = label + ' ' + YAHOO.ODE.Chart.getChartCode(this.type) + ' Chart';
+	var title = this.options.title;
+	if (!title) {
+		var label = dt.getColumnLabel(1) || this.queries[0].query_string.replace(/.*groupby:/, '').ucfirst();
+		title = label + ' ' + YAHOO.ODE.Chart.getChartCode(this.type) + ' Chart';
+	}
+	hElem.innerHTML = title;
 	hElem.style['margin-bottom'] = 0;
 	this.chart_el.appendChild(hElem);
 	this.chart_el.appendChild(chartDiv);
