@@ -1125,8 +1125,8 @@ YAHOO.ELSA.Chart.prototype.makeSimpleChart = function(){
 	var ctx = canvasEl.getContext("2d");
 	var hElem = document.createElement('h3');
 	var title = this.options.title;
-	var label = dt.getColumnLabel(1) || this.queries[0].query_string.replace(/.*groupby:/, '').ucfirst();
 	if (!title) {
+		var label = dt.getColumnLabel(1) || this.queries[0].query_string.replace(/.*groupby:/, '').ucfirst();
 		title = label + ' ' + YAHOO.ODE.Chart.getChartCode(this.type) + ' Chart';
 	}
 	hElem.innerHTML = title;
@@ -1135,7 +1135,7 @@ YAHOO.ELSA.Chart.prototype.makeSimpleChart = function(){
 	this.chart_el.appendChild(chartDiv);
 	var chartClass = 'dbchart';
     var rCharts = this.dashboard.rows[this.y].charts.length;
-    var cdWidth = 1000 / rCharts;
+    var cdWidth = YAHOO.ELSA.dashboardParams.width / rCharts;
     logger.log("Row charts:"+rCharts+",cdWidth:"+cdWidth);
 	if ('PieChart' == this.type || 'Doughnut' == this.type) {
 		chartClass = chartClass + ' pie-chart';
@@ -1165,6 +1165,10 @@ YAHOO.ELSA.Chart.prototype.makeSimpleChart = function(){
 			var xtraWidth = cdWidth - legendWidth - canvasEl.width - 60;
 			if (xtraWidth > 0) {
 				canvasEl.style['margin-left'] = (xtraWidth / 2) + 'px';
+			} else {
+				var canWidth = 160 + xtraWidth;
+				canvasEl.width = canWidth;
+				canvasEl.style.width = canWidth + 'px';
 			}
 		}, 100);
 	} else if (this.type.match(/^(Area|Line|Column|Bar)Chart$/)) {
