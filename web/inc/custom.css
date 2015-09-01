@@ -432,7 +432,7 @@ div.header img {
 	padding: 2px 5px;
 	margin: 0 auto;
 }
-#menu_bar {
+#panel_root, #menu_bar {
 	margin-top: 26px;
 }
 #logs {
