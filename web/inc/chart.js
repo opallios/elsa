@@ -132,6 +132,7 @@ YAHOO.ODE.Chart = function() {
 		ctcodes: {
 			LineChart: 'Line',
 			AreaChart: 'Area',
+			BarChart: 'Bar',
 			ColumnChart: 'Column',
 			PieChart: 'Pie',
 			Doughnut: 'Doughnut',
