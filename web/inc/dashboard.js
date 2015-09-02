@@ -446,6 +446,7 @@ YAHOO.ELSA.Dashboard.prototype.addChart = function(p_oEvent, p_Obj, p_bAddBefore
 //				delete oMeta.groupby;
 //			}
 			
+			var title = response.title || '';
 			var oNewChart = {
 				chart_id: response.chart_id,
 				queries: [
@@ -458,7 +459,10 @@ YAHOO.ELSA.Dashboard.prototype.addChart = function(p_oEvent, p_Obj, p_bAddBefore
 				],
 				type: response.chart_type,
 				y: p_iRowId,
-				x: p_iCellId
+				x: p_iCellId,
+				chart_options: {
+					title: title
+				}
 			};
 			
 			// new row?
@@ -1124,9 +1128,9 @@ YAHOO.ELSA.Chart.prototype.makeSimpleChart = function(){
 	chartDiv.appendChild(canvasEl);
 	var ctx = canvasEl.getContext("2d");
 	var hElem = document.createElement('h3');
-	var title = this.options.title;
+	var title = this.options && this.options.title;
+	var label = dt.getColumnLabel(1) || this.queries[0].query_string.replace(/.*groupby:/, '').ucfirst();
 	if (!title) {
-		var label = dt.getColumnLabel(1) || this.queries[0].query_string.replace(/.*groupby:/, '').ucfirst();
 		title = label + ' ' + YAHOO.ODE.Chart.getChartCode(this.type) + ' Chart';
 	}
 	hElem.innerHTML = title;
