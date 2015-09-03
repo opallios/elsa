@@ -333,8 +333,10 @@ YAHOO.util.Event.addListener(window, "load", function(){
     <div class="header" title="Opallios Distribution of ELSA">
       <img src="/inc/ode-logo.png" width="66" height="24">
     </div>
+   <div class="content-wrapper">
    <div id="panel_root"></div>
    <div id="google_charts"></div>
+   </div>
   </body>
 </html>
 EOHTML

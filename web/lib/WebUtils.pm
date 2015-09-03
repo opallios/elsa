@@ -169,6 +169,7 @@ sub get_index_body {
     <div class="header" title="Opallios Distribution of ELSA">
         <img src="/inc/ode-logo.png" width="66" height="24">
     </div>
+    <div class="content-wrapper">
 <div id="menu_bar"></div>
 <div id="panel_root"></div>
 <!--<h1>Enterprise Log Search and Archive</h1>-->
@@ -179,6 +180,7 @@ sub get_index_body {
     </ul>
 	    <div class="yui-content"></div>
     </div>
+</div>
 </div>
 <div class="footer">
 <span class="left-side">

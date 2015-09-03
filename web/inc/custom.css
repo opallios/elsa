@@ -411,6 +411,7 @@ div.outer-chart-div>div>h3 {
 	border-top: 0 solid #bbc;
 }
 #google_charts_tbody > tr > td {
+	border-top: 1px solid #ccd;
 	padding: 5px 0;
 }
 #tabView .yui-content {
@@ -432,7 +433,7 @@ div.header img {
 	padding: 2px 5px;
 	margin: 0 auto;
 }
-#panel_root, #menu_bar {
+.content-wrapper {
 	margin-top: 26px;
 }
 #logs {
