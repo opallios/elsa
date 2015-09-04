@@ -475,6 +475,12 @@ YAHOO.ELSA.Dashboard.prototype.addChart = function(p_oEvent, p_Obj, p_bAddBefore
 			else {
 				// adding to an existing row
 				oSelf.rows[p_iRowId].charts.push(oNewChart);
+        var charts = oSelf.rows[p_iRowId].charts;
+        for(var i = 0; i < charts.length; ++i) {
+          if (charts[i].chart_id == oNewChart.chart_id) continue;
+          var chartObj = oSelf.charts[ charts[i].chart_id ];
+          chartObj.redraw();
+        }
 			}
 			
 			var oElTd = document.createElement('td');
