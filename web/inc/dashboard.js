@@ -1192,7 +1192,7 @@ YAHOO.ELSA.Chart.prototype.makeSimpleChart = function(){
 		var values = [];
 		var barCount = data.length;
 		var ymax = 0;
-		var thisColor = colorPalette[paletteLength - 5];
+		var thisColor = colorPalette[paletteLength - 10];
 		for(var i = 0; i < data.length; ++i) {
 			var val = data[i]["value"];
 			if (val > ymax) { ymax = val; }
@@ -1231,7 +1231,8 @@ YAHOO.ELSA.Chart.prototype.makeSimpleChart = function(){
 		if (this.type.match('^(Column|Bar)Chart$')) {
 			opts['barValueSpacing'] = barCount > 10 ? 1 : 2;
 		} else {
-			opts['pointHitDetectionRadius'] = barCount > 10 ? 1 : 2;
+			opts['pointDotRadius'] = barCount > 10 ? 0 : 1;
+			opts['pointHitDetectionRadius'] = 1 + Math.floor(0.4 * ((cWidth - 60) / barCount));
 		}
 		logger.log("OPTIONS: " + JSON.stringify(opts));
 		if ('ColumnChart' == this.type)
@@ -1240,7 +1241,7 @@ YAHOO.ELSA.Chart.prototype.makeSimpleChart = function(){
 			myBarChart = new Chart(ctx).HorizontalBar(data, opts);
 		else {
 			var dset = data.datasets[0];
-			thisColor = colorPalette[paletteLength - 2];
+			thisColor = colorPalette[paletteLength - 9];
 			dset.fillColor = thisColor[0];
 			dset.strokeColor = thisColor[1];
 			dset.pointColor = thisColor[1];
