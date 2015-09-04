@@ -1283,6 +1283,8 @@ YAHOO.ELSA.Chart.prototype.makeSimpleChart = function(){
 			logger.log("TABLE CHART el:" + this.chart_el.id);
 			var tblODiv = this.chart_el.firstChild;
 			var tblIDiv = tblODiv.firstChild;
+			var btnDiv = this.chart_el.parentNode.firstChild;
+			btnDiv.style['margin-bottom'] = '15px';
 			logger.log("OUTER DIV: " + tblODiv.getAttribute('class'));
 			logger.log("INNER DIV: " + tblIDiv.getAttribute('class'));
 			setTimeout(function() {
@@ -1295,8 +1297,6 @@ YAHOO.ELSA.Chart.prototype.makeSimpleChart = function(){
 						sbWidth += 5;
 //					tblODiv.style.width = (tblODiv.offsetWidth + sbWidth)+'px';
 					tblODiv.style.overflow = 'auto';
-					tblODiv.style['margin-top'] = '15px';
-					tblIDiv.style.overflow = 'none';
 				}
 			}, 100);
 		}
