@@ -5,6 +5,8 @@ YAHOO.ELSA.Chart.registeredCallbacks = {};
 
 YAHOO.namespace('YAHOO.ODE.Chart');
 
+Math.log10 = function (x) { return Math.log(x) / Math.LN10; };
+
 var rgb2hsl = function(r, g, b) {
   var r1 = r / 255;
   var g1 = g / 255;
