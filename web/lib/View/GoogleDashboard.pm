@@ -14,7 +14,7 @@ use AnyEvent;
 use Try::Tiny;
 use Ouch qw(:trytiny);
 
-our $Default_width = 1000;
+our $Default_width = 1360;
 
 has 'system_dashboards' => (traits => [qw(Hash)], is => 'rw', isa => 'HashRef', required => 1, default => sub { {
 	_system => {
@@ -330,8 +330,13 @@ YAHOO.util.Event.addListener(window, "load", function(){
 </head>
 
   <body class=" yui-skin-sam">
+    <div class="header" title="Opallios Distribution of ELSA">
+      <img src="/inc/ode-logo.png" width="66" height="24">
+    </div>
+   <div class="content-wrapper">
    <div id="panel_root"></div>
-    <div id="google_charts"></div>
+   <div id="google_charts"></div>
+   </div>
   </body>
 </html>
 EOHTML
