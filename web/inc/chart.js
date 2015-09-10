@@ -127,6 +127,8 @@ YAHOO.ODE.Chart = function() {
 				}
 			}
 			steps /= 2;
+			if (steps * stepVal < ymax)
+				++steps;
 			return {
 				scaleStepWidth: stepVal,
 				scaleSteps: steps
