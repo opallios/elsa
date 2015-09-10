@@ -5,6 +5,10 @@ YAHOO.ELSA.Chart.registeredCallbacks = {};
 
 YAHOO.namespace('YAHOO.ODE.Chart');
 
+if (typeof Math.log10 === 'undefined') {
+  Math.log10 = function (x) { return Math.log(x) / Math.LN10; };
+}
+
 var rgb2hsl = function(r, g, b) {
   var r1 = r / 255;
   var g1 = g / 255;
@@ -67,7 +71,7 @@ YAHOO.ODE.Chart = function() {
 	Chart.defaults.Bar.scaleShowVerticalLines = false;
 	Chart.defaults.Bar.scaleGridLineColor = "rgba(0,0,0,0.2)";
 	Chart.defaults.Bar.showXLabels = 10;
-	Chart.defaults.HorizontalBar.scaleShowGridLines = true;
+	Chart.defaults.HorizontalBar.scaleShowGridLines = false;
 	Chart.defaults.HorizontalBar.scaleGridLineColor = "rgba(0,0,0,0.2)";
 	Chart.defaults.Line.showXLabels = 10;
 	Chart.defaults.Line.pointDotRadius = 0;

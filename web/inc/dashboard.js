@@ -1233,19 +1233,20 @@ YAHOO.ELSA.Chart.prototype.makeSimpleChart = function(){
 		canvasEl.width = cWidth;
 		canvasEl.style.width = cWidth + 'px';
 		hElem.style['text-align'] = 'center';
-		var myBarChart;
 		if (this.type.match('^(Column|Bar)Chart$')) {
 			opts['barValueSpacing'] = barCount > 10 ? 1 : 2;
 		} else {
 			opts['pointDotRadius'] = barCount > 10 ? 0 : 1;
 			opts['pointHitDetectionRadius'] = 1 + Math.floor(0.4 * ((cWidth - 60) / barCount));
 		}
-		logger.log("OPTIONS: " + JSON.stringify(opts));
+		var makeChart;
 		if ('ColumnChart' == this.type)
-			myBarChart = new Chart(ctx).Bar(data, opts);
-		else if ('BarChart' == this.type)
-			myBarChart = new Chart(ctx).HorizontalBar(data, opts);
-		else {
+			makeChart = function(ctx, data, opts) { return new Chart(ctx).Bar(data, opts); }
+		else if ('BarChart' == this.type) {
+			logger.log("BAR OPTIONS: " + JSON.stringify(opts));
+			makeChart = function(ctx, data, opts) { return new Chart(ctx).HorizontalBar(data, opts); }
+			opts['animation'] = false;
+		} else {
 			var dset = data.datasets[0];
 			thisColor = colorPalette[paletteLength - 9];
 			dset.fillColor = thisColor[0];
@@ -1256,19 +1257,32 @@ YAHOO.ELSA.Chart.prototype.makeSimpleChart = function(){
 			dset.pointHighlightStroke = thisColor[3];
 			if ('LineChart' == this.type)
 				dset.fillColor = "rgba(0,0,0,0)";
-			myBarChart = new Chart(ctx).Line(data, opts);
+			makeChart = function(ctx, data, opts) { return new Chart(ctx).Line(data, opts); }
 		}
+		var myBarChart = makeChart(ctx, data, opts);
 		logger.log("data:"+JSON.stringify(data));
 		legendDiv.innerHTML = myBarChart.generateLegend();
+		var oSelf = this;
 		setTimeout(function() {
 			var legendWidth = legendDiv.offsetWidth + YAHOO.ODE.Chart.sbWidth;
 			chartDiv.style.width = cdWidth + 'px';
 			cnWidth = cdWidth - 40 - legendWidth;
 			logger.log("Legend Width:"+legendWidth+", chartDiv width:"+cdWidth+", canvas width:"+cnWidth);
+			if ('BarChart' === oSelf.type) {
+				var ctx = canvasEl.getContext('2d');
+				ctx.clearRect(0, 0, canvasEl.width, canvasEl.height);
+				myBarChart.destroy();
+				myBarChart.clear();
+			}
 			canvasEl.width = cnWidth;
 			canvasEl.style.width = cnWidth + 'px';
+			console.log("CANVAS WIDTH: "+cWidth+"(INITIAL), " + cnWidth + "(NEW)");
 			legendDiv.style.width = legendWidth + 'px';
-		}, 100);
+			if ('BarChart' === oSelf.type) {
+				opts['animation'] = true;
+				myBarChart = makeChart(ctx, data, opts);
+			}
+		}, 80);
 	} else {
 
 		this.wrapper = new google.visualization.ChartWrapper({
