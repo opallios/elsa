@@ -1041,7 +1041,7 @@ YAHOO.ELSA.Chart.prototype.mergeDataTables = function(p_oAddTable, p_sLabel){
 	
 YAHOO.ELSA.Chart.prototype.draw = function(){
 	if (this.isTimeChart){
-		console.log('timechart');
+		logger.log('timechart');
 		this.makeTimeChart();
 	}
 	else if (this.type == 'GeoChart'){
@@ -1189,7 +1189,7 @@ YAHOO.ELSA.Chart.prototype.makeSimpleChart = function(){
 				canvasEl.width = canWidth;
 				canvasEl.style.width = canWidth + 'px';
 			}
-		}, 100);
+		}, 70);
 	} else if (this.type.match(/^(Area|Line|Column|Bar)Chart$/)) {
 		//'AreaChart' == this.type || 'LineChart' == this.type || 'ColumnChart' == this.type || 'BarChart' == this.type) {
 		var datasets = [];
@@ -1221,10 +1221,7 @@ YAHOO.ELSA.Chart.prototype.makeSimpleChart = function(){
 		var legendDiv = document.createElement('div');
 		chartDiv.appendChild(legendDiv);
         canvasEl.height = 225;
-        var cWidth = 400;
-		if (cdWidth > 500) {
-			cWidth = cdWidth - 225;
-		}
+        var cWidth = cdWidth - 150;
 		/*
         if (20 + barCount * 6.8 > cWidth) {
             cWidth = 20 + barCount * 6.8;
@@ -1257,6 +1254,7 @@ YAHOO.ELSA.Chart.prototype.makeSimpleChart = function(){
 			dset.pointHighlightStroke = thisColor[3];
 			if ('LineChart' == this.type)
 				dset.fillColor = "rgba(0,0,0,0)";
+			opts['animation'] = false;
 			makeChart = function(ctx, data, opts) { return new Chart(ctx).Line(data, opts); }
 		}
 		var myBarChart = makeChart(ctx, data, opts);
@@ -1268,7 +1266,7 @@ YAHOO.ELSA.Chart.prototype.makeSimpleChart = function(){
 			chartDiv.style.width = cdWidth + 'px';
 			cnWidth = cdWidth - 40 - legendWidth;
 			logger.log("Legend Width:"+legendWidth+", chartDiv width:"+cdWidth+", canvas width:"+cnWidth);
-			if ('BarChart' === oSelf.type) {
+			if ('animation' in opts) {
 				var ctx = canvasEl.getContext('2d');
 				ctx.clearRect(0, 0, canvasEl.width, canvasEl.height);
 				myBarChart.destroy();
@@ -1276,13 +1274,13 @@ YAHOO.ELSA.Chart.prototype.makeSimpleChart = function(){
 			}
 			canvasEl.width = cnWidth;
 			canvasEl.style.width = cnWidth + 'px';
-			console.log("CANVAS WIDTH: "+cWidth+"(INITIAL), " + cnWidth + "(NEW)");
+			logger.log("CANVAS WIDTH: "+cWidth+"(INITIAL), " + cnWidth + "(NEW)");
 			legendDiv.style.width = legendWidth + 'px';
-			if ('BarChart' === oSelf.type) {
+			if ('animation' in opts) {
 				opts['animation'] = true;
 				myBarChart = makeChart(ctx, data, opts);
 			}
-		}, 80);
+		}, 50);
 	} else {
 
 		this.wrapper = new google.visualization.ChartWrapper({
@@ -1318,7 +1316,7 @@ YAHOO.ELSA.Chart.prototype.makeSimpleChart = function(){
 //					tblODiv.style.width = (tblODiv.offsetWidth + sbWidth)+'px';
 					tblODiv.style.overflow = 'auto';
 				}
-			}, 100);
+			}, 70);
 		}
 
 		logger.log(this.wrapper);

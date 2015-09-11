@@ -65,6 +65,8 @@ YAHOO.ODE.Chart = function() {
 	Chart.defaults.global.scaleLineColor = "rgba(0,0,0,0.5)";
 	Chart.defaults.global.scaleFontSize = 10;
 	Chart.defaults.global.tooltipTemplate = "<%if (label){%>Key:<%=label%>; Count:<%}%><%= value %>";
+	Chart.defaults.global.tooltipFontSize = 11;
+	Chart.defaults.global.animationSteps = 30;
 	Chart.defaults.Bar.barStrokeWidth = 1;
 	Chart.defaults.Bar.barValueSpacing = 2;
 	Chart.defaults.Bar.scaleShowGridLines = true;
