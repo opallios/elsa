@@ -44,7 +44,7 @@ start() {
         exit 1
     fi
     
-    $starman -I${myapp_path}/lib -p 80 --pid ${PID_FILE} --error-log /var/log/starman-error.log ${myapp_path}/lib/Web.psgi -D
+    $starman -I${myapp_path}/lib --workers 12 -p 80 --pid ${PID_FILE} --error-log /var/log/starman-error.log ${myapp_path}/lib/Web.psgi -D
     RETVAL=$?
     if [ $RETVAL -eq 0 ]; then
       echo "  Started"

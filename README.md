@@ -13,23 +13,31 @@ The latest release of ODE is, **ODE 0.1**. This first ODE release has been teste
 #### Debian - Ubuntu 12.04 and 14.04
 > Download the package,
 ```
-> wget https://s3-us-west-1.amazonaws.com/ode0.1/ode_0.1-2_all.deb
+> wget https://s3-us-west-1.amazonaws.com/ode0.3/ode_0.3-2_all.deb
 ```
 >  Run the package,
 ```
-> sudo dpkg -i Downloads/ode_0.1-2_all.deb
-> sudo apt-get install -f
+> sudo dpkg -i ode_0.3-2_all.deb
+> sudo apt-get install -f   (this command is not required for updates)
 ```
-**Note:** dpkg will complain of missing dependencies, ignore it.
+**Note:** dpkg will complain of missing dependencies (for fresh install), ignore it.
 
 #### RPM - RHEL 6.6 and Centos 6.5
 > Download the package,
 ```
-> wget https://s3-us-west-1.amazonaws.com/ode0.1/ode-0.1-2.noarch.rpm
+> wget https://s3-us-west-1.amazonaws.com/ode0.3/ode-0.3-3.noarch.rpm
+or
+> curl -L -o ode-0.3-3.noarch.rpm  https://s3-us-west-1.amazonaws.com/ode0.3/ode-0.3-3.noarch.rpm
 ```
 >  Run the package,
 ```
-> sudo yum install Downloads/ode-0.1-2.noarch.rpm
+> sudo yum -y install ode-0.3-3.noarch.rpm  (for fresh install)
+> sudo yum -y update ode-0.3-3.noarch.rpm (for upgrade from ODE 0.1 to 0.3)
+```
+> Enable port 80 (firewall blocks port 80 by default on Centos),
+```
+$ sudo iptables -A INPUT -p tcp -m tcp --dport 80 -j ACCEPT
+$ sudo /etc/init.d/iptables save
 ```
 
 #### Verify Installation
@@ -63,6 +71,10 @@ You may also use the pre-built ODE images (medium and large systems) on AWS for 
 * Ubuntu 12.04 Med - ODE-ubuntu-1204-med-Opallios
 * Ubuntu 14.04 Large - ODE-ubuntu-1404-large-Opallios
 * RedHat 6.6 Med - ODE-rhel-66-med-Opallios
+
+### Getting Help
+
+You may continue to report any ODE or ELSA related issues at [ELSA's community forum](https://groups.google.com/forum/#!forum/enterprise-log-search-and-archive). The ODE team is an active participant in ELSA's community and would promptly respond to any ODE related issues there.
 
 elsa
 ====
