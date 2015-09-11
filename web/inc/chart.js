@@ -118,7 +118,7 @@ YAHOO.ODE.Chart = function() {
 			} );
 		},
 		getSteps: function(ymax) {
-			var stepBase = Math.pow(10, Math.floor(Math.log10(ymax)) - 1);
+			var stepBase = Math.pow(10, Math.floor(Math.log10(ymax) - 0.99));
 			var fact = [1, 2, 5, 10];
 			var steps;
 			var stepVal;
@@ -129,7 +129,7 @@ YAHOO.ODE.Chart = function() {
 					break;
 				}
 			}
-			steps /= 2;
+			steps = Math.floor(steps / 2);
 			if (steps * stepVal < ymax)
 				++steps;
 			return {
