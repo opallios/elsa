@@ -1,10 +1,10 @@
 ODE
 ===================
-This forked branch is for Opallios distribution of ELSA, ODE. [ELSA](https://github.com/mcholste/elsa) is a log management and analytical system. Some of the key changes so far include, running Starman as the default http server, fixes in install script to be more reliable, adding http server watchdog. ODE 0.1 can be installed either as packages or image. Please refer to [opalliosode.org](http://www.opalliosode.org) for more details on ODE.
+This forked branch is for Opallios distribution of ELSA, ODE. [ELSA](https://github.com/mcholste/elsa) is a log management and analytical system. Some of the key changes so far include, running Starman as the default http server, new charting, integration with fluentd, debian and rpm packages, adding http server watchdog. ODE 0.3 can be installed either through package or image. Please refer to [opalliosode.org](http://www.opalliosode.org) for more details on ODE.
 
 Getting Started
 -------------
-The latest release of ODE is, **ODE 0.1**. This first ODE release has been tested and verified on four different linux flavors using the standard packaging, deb and rpm.
+The latest release of ODE is, **ODE 0.3**. This ODE release has been tested and verified on four different linux flavors using the standard packaging, deb and rpm.
 
 ### <i class="icon-file"></i> ODE Installation
 
