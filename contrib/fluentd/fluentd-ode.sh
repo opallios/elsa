@@ -1,15 +1,23 @@
 #!/bin/sh
-# Load vars
-vardir=/usr/local/elsa/build/distro/common
-. $vardir/vars.sh
+if [ -f "/etc/elsa_vars.sh" ]; then
+DATA_DIR=`grep --only-matching --perl-regex "(?<=DATA_DIR\=).*" /etc/elsa_vars.sh`
+elif [ -f "/usr/local/elsa/build/distro/common/vars.sh" ]; then
+DATA_DIR=`grep --only-matching --perl-regex "(?<=DATA_DIR\=).*" /usr/local/elsa/build/distro/common/vars.sh`
+else
+DATA_DIR=/data
+fi
 fluent_dir=/usr/local/elsa/contrib/fluentd
 if [ "x$DATA_DIR" == "x" ]; then
- DATA_DIR="/data"
+ DATA_DIR=/data
 fi
-
+DATA_DIR="${DATA_DIR%\"}"
+DATA_DIR="${DATA_DIR#\"}"
 # Directory creation for file processing
 
 create_fluentd_dirs() {
+if [ ! -d $DATA_DIR ]; then
+mkdir $DATA_DIR
+fi
 if [ -d $DATA_DIR/fluentd ]; then
 echo "fluentd directories already exists"
 else
@@ -274,8 +282,7 @@ cp $fluent_dir/plugin/*.rb /etc/td-agent/plugin/
 echo "successfully copied Custom Plugin's ......"
 
 }
-
-install_ruby_gems() {
+install_ruby() {
 echo "Fluentd plugin installation start ......"
 # Ruby and ruby gems Installation
 if [ "$codename" = "trusty" ] || [ "$codename" = "precise" ] || [ "$codename" = "lucid" ]; then
@@ -283,60 +290,15 @@ echo "installing Ruby and Rubygems for Ubuntu"
 yes | apt-get install ruby1.9.1-dev
 yes | apt-get install ruby1.9.1
 echo "Ruby & gems installed for Ubuntu"
-echo "installing flatten Hash Plug-in for Ubuntu...."
+fi
+}
+install_flatten_hash() {
+echo "installing flatten Hash Plug-in ...."
 gem install gem-path
 gem install fluent-plugin-flatten-hash
 gem_path=`gem path fluent-plugin-flatten-hash`
 cp $gem_path/lib/fluent/plugin/*.rb  /etc/td-agent/plugin/
-echo "flatten Hash plugin installed for Ubuntu";
-else
-echo "installing RVM,Ruby and Rubygems for RHEL/CentOS...."
-#Step 1: Upgrade Packages 
-yum update
-yum groupinstall "Development Tools"
-#Step 2: Installing Recommended Packages
-yum install gcc-c++ patch readline readline-devel zlib zlib-devel 
-yum install libyaml-devel libffi-devel openssl-devel make 
-yum install bzip2 autoconf automake libtool bison iconv-devel
-#Step 3: Install RVM ( Ruby Version Manager ) 
-curl -L get.rvm.io | bash -s stable
-#Step 5: Install Required Ruby Version
-\# Load RVM into a shell session *as a function*
-if [[ -s "$HOME/.rvm/scripts/rvm" ]] ; then
-
-  \# First try to load from a user install
-  source "$HOME/.rvm/scripts/rvm"
-
-elif [[ -s "/usr/local/rvm/scripts/rvm" ]] ; then
-
-  \# Then try to load from a root install
-  source "/usr/local/rvm/scripts/rvm"
-
-else
-
-  printf "ERROR: An RVM installation was not found.\n"
-
-fi
-
-cd /root
-. ~/.bashrc
-#Step 5: Install Required Ruby Version
-rvm install 1.9.3
-#Update rubygems
-#gem update --system
-#gem install bundler
-#source /etc/profile.d/rvm.sh
-
-echo "installed  RVM,Ruby and Rubygems for RHEL/CentOS...."
-
-echo "installing flatten Hash Plug-in for RHEL/CentOS...."
-
-gem install gem-path
-gem install fluent-plugin-flatten-hash
-gem_path=`gem path fluent-plugin-flatten-hash`
-cp $gem_path/lib/fluent/plugin/*.rb  /etc/td-agent/plugin/
-echo "flatten Hash plugin installed for RHEL/CentOS...."
-fi
+echo "flatten Hash plugin installed ...."
 }
 
 fluentd_logrotate() {
@@ -346,7 +308,7 @@ echo "$DATA_DIR/fluentd/apache_log/out_files/apache.out.log {
            missingok
            size=1k
            compress
-           olddir $DATA_DIR/fluentd/apache_log/out_files/old
+           olddir $DATA_DIR/fluentd/apache_log/out_files/old_files
            notifempty
            create 640 td-agent td-agent
             }" > /etc/logrotate.d/fluentd_apache
@@ -356,7 +318,7 @@ echo "$DATA_DIR/fluentd/apache_log/out_files/apache.out.log {
            missingok
            size=1k
            compress
-           olddir $DATA_DIR/fluentd/json_log/out_files/old
+           olddir $DATA_DIR/fluentd/json_log/out_files/old_files
            notifempty
            create 640 td-agent td-agent
             }" > /etc/logrotate.d/fluentd_json
@@ -366,7 +328,7 @@ echo "$DATA_DIR/fluentd/netflow_log/out_files/netflow.out.log {
            missingok
            size=1k
            compress
-           olddir $DATA_DIR/fluentd/netflow_log/out_files/old
+           olddir $DATA_DIR/fluentd/netflow_log/out_files/old_files
            notifempty
            create 640 td-agent td-agent
             }" > /etc/logrotate.d/fluentd_netflow
@@ -376,7 +338,7 @@ echo "$DATA_DIR/fluentd/custom_log/out_files/custom.out.log {
            missingok
            size=1k
            compress
-           olddir $DATA_DIR/fluentd/custom_log/out_files/old
+           olddir $DATA_DIR/fluentd/custom_log/out_files/old_files
            notifempty
             create 640 td-agent td-agent
             }" > /etc/logrotate.d/fluentd_custom
@@ -394,11 +356,11 @@ exec_func(){
 	if [ $RETVAL -eq 0 ]; then
 	        echo "$FUNCTION success"
 	else
-	        echo "$FUNCTION FAIL" && exit
+	        echo "$FUNCTION FAIL" 
 	fi
 	}
 echo "Running td-agent setup.."
   #node functions
-    for FUNCTION in "create_fluentd_dirs" "install_td_agent" "cp_td_agent_conf"  "install_ruby_gems" "fluentd_logrotate"; do
+    for FUNCTION in "create_fluentd_dirs" "install_td_agent" "cp_td_agent_conf" "install_ruby" "install_flatten_hash" "fluentd_logrotate"; do
 	  exec_func $FUNCTION
     done

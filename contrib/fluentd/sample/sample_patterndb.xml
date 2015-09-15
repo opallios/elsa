@@ -1,0 +1,185 @@
+<patterndb version='3' pub_date='2009-11-04'>
+<ruleset name="Netflow" id='Netflow'>
+		<pattern>netflow_syslog</pattern>
+		<rules>
+			<rule provider="ELSA" class='34' id='34'>
+				<patterns>
+					<pattern>@ESTRING:i0:|@@ESTRING:i1:|@@ESTRING:i2:|@@ESTRING:i3:|@@ESTRING:i4:|@@ESTRING:i5:|@@ESTRING:s0:|@@ESTRING:s1:|@@ESTRING:s2:|@@ESTRING:s3:|@@ESTRING:s4:|@@ANYSTRING:s5:@</pattern>
+					<pattern>@ESTRING:i0:|@@ESTRING:i1:|@@ESTRING:i2:|@@ESTRING:i3:|@@ESTRING:i4:|@@ESTRING:i5:|@@ESTRING:s0:|@@ESTRING:s1:|@@ESTRING:s2:|@@ESTRING:s3:|@@ESTRING:s4:|@</pattern>
+					<pattern>@ESTRING:i0:|@@ESTRING:i1:|@@ESTRING:i2:|@@ESTRING:i3:|@@ESTRING:i4:|@@ESTRING:i5:|@@ESTRING:s0:|@@ESTRING:s1:|@@ESTRING:s2:|@</pattern>
+				</patterns>
+				<examples>
+					<example>
+						<test_message program="netflow_syslog">tcp|192.85.128.47|35843|1.1.1.1|443|30486|2173|US|Palo Alto, CA|37.376202|-122.182602|HPES - Hewlett-Packard Company</test_message>
+						<test_values>
+							<test_value name="i0">tcp</test_value>
+							<test_value name="i1">192.85.128.47</test_value>
+							<test_value name="i2">35843</test_value>
+							<test_value name="i3">1.1.1.1</test_value>
+							<test_value name="i4">443</test_value>
+							<test_value name="i5">30486</test_value>
+							<test_value name="s0">2173</test_value>
+							<test_value name="s1">US</test_value>
+							<test_value name="s2">Palo Alto, CA</test_value>
+							<test_value name="s3">37.376202</test_value>
+							<test_value name="s4">-122.182602</test_value>
+							<test_value name="s5">HPES - Hewlett-Packard Company</test_value>
+						</test_values>
+					</example>
+				</examples>
+			</rule>
+		</rules>
+	</ruleset>
+	#pattern for Json
+<ruleset>
+<rules>
+<rule class='10006' id='10006'>
+<patterns>
+
+<pattern>startTime=@NUMBER::@,endTime=@NUMBER::@,srcMac=@ESTRING::,@destMac=@ESTRING::,@srcIp=@IPv4:i0:@,destIp=@IPv4:i2:@,srcPort=@NUMBER:i1:@,destPort=@NUMBER:i3:@,protocol=@ESTRING::,@app=@ESTRING::,@hlApp=@ESTRING::,@security=@ESTRING::,@packetsCaptured=@NUMBER::@,bytesCaptured=@NUMBER:i4:@,terminationReason=@ESTRING::,@empty=@ESTRING::,@boxId=@NUMBER::@,networks_0=@ESTRING::,@networks_1=@ESTRING::,@srcLocation_countryName=@ESTRING:s0:,@srcLocation_countryCode=@ESTRING::,@srcLocation_longitude=@ESTRING:s1:,@srcLocation_latitude=@ESTRING:s2:,@@ANYSTRING::@</pattern>
+
+</patterns>
+
+<examples>
+
+<example>
+                                    <test_message program="%ode-6-10006">startTime=141741690023357880,endTime=141741690023733424,srcMac=00:14:22:18:DA:7A,destMac=00:17:C5:15:AC:C4,srcIp=192.168.1.59,destIp=192.168.4.7,srcPort=54205,destPort=161,protocol=UDP,app=SNMP,app=SNMP,hlApp=SNMP,security=NONE,packetsCaptured=2,bytesCaptured=216,terminationReason=Timeout,empty=false,boxId=1,networks_0=Network 1,networks_1=Network 4,srcLocation_countryName=Local,srcLocation_countryCode=Local,srcLocation_longitude=0.0,srcLocation_latitude=0.0,
+</test_message>
+
+                                   <test_value name="i0">192.168.1.59</test_value>
+                                   <test_value name="i2">192.168.4.7</test_value>
+                                   <test_value name="i1">54205</test_value>
+                                   <test_value name="i3">161</test_value>
+                                                                   <test_value name="i4">216</test_value>
+                                                                   <test_value name="s0">Local</test_value>
+                                                                   <test_value name="s1">0.0</test_value>
+                                                                   <test_value name="s2">0.0</test_value>
+
+ </example>
+</examples>
+ </rule>
+</rules>
+</ruleset>
+
+#pattern for apache
+
+<ruleset name='APACHE_LOG' id='10005'>
+<rules>
+                <rule provider='APACHE_LOG' class='10005' id='10005'>
+        <patterns>
+                                        <pattern>host=@IPv4:i0:@,user=@ESTRING:s0:,@method=@ESTRING:s1:,@path=@ESTRING:s2:,@code=@NUMBER:i1:@,size=@NUMBER:i2:@,referer=@ESTRING:s3:,@@ANYSTRING:s4:@</pattern>
+        </patterns>
+                                        <examples>
+                      <example>
+                                        <test_message program="%ode-5-10005">host=127.0.0.1,user=-,method=GET,path=/API/local_info,code=200,size=322000,referer=http://127.0.0.1/API/local_info,agent=Mozilla/5.0 (compatible; U; AnyEvent-HTTP/2.22; +http://software.schmorp.de/pkg/AnyEvent)</test_message>
+                                        <test_values>
+
+                                                <test_value name='i0'>127.0.0.1</test_value>
+                                                <test_value name='i1'>200</test_value>
+                                                <test_value name='i2'>322000</test_value>
+                                                <test_value name='s0'>-</test_value>
+                                                <test_value name='s1'>Method</test_value>
+                                                <test_value name='s2'>/API/local_info</test_value>
+                                                <test_value name='s3'>http://127.0.0.1/API/local_info</test_value>
+                                                <test_value name='s4'>Mozilla/5.0 (compatible; U; AnyEvent-HTTP/2.22; +http://software.schmorp.de/pkg/AnyEvent)</test_value>
+
+                                          </test_values>
+                                </example>
+                        </examples>
+                </rule>
+                </rules>
+        </ruleset>
+
+# Pattern for custom message
+
+<ruleset>
+
+<rules>
+
+<rule class='10001' id='10001'>
+
+<patterns>
+
+<pattern>@ESTRING:s0: @@ESTRING:s1: @@ESTRING:i0: @This is event</pattern>
+
+</patterns>
+
+<examples>
+
+<example>
+                                    <test_message program='%ode-5-10001'>Server1 Warning 1 This is event 1</test_message>
+
+                                    <test_value name='s0'>Server1</test_value>
+
+                                    <test_value name='s1'>Warning</test_value>
+
+                                    <test_value name='i0'>1</test_value>
+
+ </example>
+
+</examples>
+
+ </rule>
+
+</rules>
+
+</ruleset>
+
+<ruleset>
+                <rules>
+                        <rule class='10002' id='10002'>
+                                <patterns>
+                                       <pattern>Event @NUMBER:i0:@ from @ESTRING:s0: @with severity @ESTRING:s1:,@ type @ESTRING:s2:,@ code @NUMBER:i1:@ and bytes @NUMBER:i2:@</pattern>
+                                </patterns>
+                                <examples>
+                                  <example>
+                                    <test_message program='%ode-5-10002' >Event 1 from server1 with severity info, type common, code 10 and bytes 120.</test_message>
+                                    <!-- event ID -->
+                                    <test_value name="i0">1</test_value>
+                                    <!-- server name-->
+                                    <test_value name="s0">server1</test_value>
+                                    <!-- severity -->
+                                    <test_value name="s1">info</test_value>
+                                    <!-- type -->
+                                    <test_value name="s2">common</test_value>
+                                    <!-- code -->
+                                    <test_value name="i1">10</test_value>
+                                     <!-- bytes -->
+                                    <test_value name="i1">120</test_value>
+                                  </example>
+                                </examples>
+                        </rule>
+                </rules>
+        </ruleset>
+<ruleset >
+                 <rules>
+                        <rule class='netflow_url' id='10007'>
+                                <patterns>
+                                        <pattern>@ESTRING:i0:|@@ESTRING:i1:|@@ESTRING:i2:|@@ESTRING:i3:|@@ESTRING:i4:|@@ESTRING:i5:|@@ESTRING:s0:|@@ESTRING:s1:|@@ESTRING:s2:|@@ESTRING:s3:|@@ESTRING:s4:|@@ANYSTRING:s5:@</pattern>
+                                        <pattern>@ESTRING:i0:|@@ESTRING:i1:|@@ESTRING:i2:|@@ESTRING:i3:|@@ESTRING:i4:|@@ESTRING:i5:|@@ESTRING:s0:|@@ESTRING:s1:|@@ESTRING:s2:|@@ESTRING:s3:|@@ESTRING:s4:|@</pattern>
+                                        <pattern>@ESTRING:i0:|@@ESTRING:i1:|@@ESTRING:i2:|@@ESTRING:i3:|@@ESTRING:i4:|@@ESTRING:i5:|@@ESTRING:s0:|@@ESTRING:s1:|@@ESTRING:s2:|@</pattern>
+                                </patterns>
+                                <examples>
+                                        <example>
+                                                <test_message program="netflow_url">tcp|192.85.128.47|35843|1.1.1.1|443|30486|2173|US|Palo Alto, CA|37.376202|-122.182602|HPES - Hewlett-Packard Company</test_message>
+                                                <test_values>
+                                                        <test_value name="i0">tcp</test_value>
+                                                        <test_value name="i1">192.85.128.47</test_value>
+                                                        <test_value name="i2">35843</test_value>
+                                                        <test_value name="i3">1.1.1.1</test_value>
+                                                        <test_value name="i4">443</test_value>
+                                                        <test_value name="i5">30486</test_value>
+                                                        <test_value name="s0">2173</test_value>
+                                                        <test_value name="s1">US</test_value>
+                                                        <test_value name="s2">Palo Alto, CA</test_value>
+                                                        <test_value name="s3">37.376202</test_value>
+                                                        <test_value name="s4">-122.182602</test_value>
+                                                        <test_value name="s5">HPES - Hewlett-Packard Company</test_value>
+                                                </test_values>
+                                        </example>
+                                </examples>
+                        </rule>
+                </rules>
+        </ruleset>
+
+</patterndb>

@@ -34,10 +34,21 @@ or
 > sudo yum -y install ode-0.3-3.noarch.rpm  (for fresh install)
 > sudo yum -y update ode-0.3-3.noarch.rpm (for upgrade from ODE 0.1 to 0.3)
 ```
+> After upgrade (ODE 0.1 to 0.3) you may have to restart services due to a bug in 0.1 package,
+```
+> service syslog-ng restart
+> service searchd restart
+> service starman restart
+
+Note: This is only required when upgrading from 0.1 to 0.3 not for fresh installs.
+```
+
 > Enable port 80 (firewall blocks port 80 by default on Centos),
 ```
-$ sudo iptables -A INPUT -p tcp -m tcp --dport 80 -j ACCEPT
-$ sudo /etc/init.d/iptables save
+$ sudo vi /etc/sysconfig/iptables
+> Copy the ssh accept line and change the port to 80
+$ sudo service iptables restart
+> reference: http://www.binarytides.com/open-http-port-iptables-centos/
 ```
 
 #### Verify Installation
@@ -68,13 +79,13 @@ In case you want to remove the installed package. Note, this will delete all the
 
 You may also use the pre-built ODE images (medium and large systems) on AWS for quick installation or evaluation. You can search for "opallios" in the Community AMIs for these images.
 
-* Ubuntu 12.04 Med - ODE-ubuntu-1204-med-Opallios
-* Ubuntu 14.04 Large - ODE-ubuntu-1404-large-Opallios
-* RedHat 6.6 Med - ODE-rhel-66-med-Opallios
+* Ubuntu 14.04 Med - ODE-0.3-ubuntu-14.04-med-Opallios
+* RedHat 6.6 Med - ODE-0.3-rhel-6.6-med-Opallios
 
 ### Getting Help
 
-You may continue to report any ODE or ELSA related issues at [ELSA's community forum](https://groups.google.com/forum/#!forum/enterprise-log-search-and-archive). The ODE team is an active participant in ELSA's community and would promptly respond to any ODE related issues there.
+You may continue to report any ODE or ELSA related issues at [ELSA's community forum](https://groups.google.com/forum/#!forum/enterprise-log-search-and-archive). The ODE team is an active participant in ELSA's community and would promptly respond to any ODE related issues there. You may also write to support@opallios.com for any more details or questions.
+You can find additional documentation on ODE at [opalliosode.org](http://www.opalliosode.org).
 
 elsa
 ====

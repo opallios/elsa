@@ -1,0 +1,9 @@
+/data/fluentd/netflow_log/out_files/netflow.out.log {
+           rotate 5
+           missingok
+           size=1k
+           compress
+           olddir /data/fluentd/netflow_log/out_files/old_files
+           notifempty
+           create 640 td-agent td-agent
+            }
