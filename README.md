@@ -40,14 +40,14 @@ or
 > service searchd restart
 > service starman restart
 
-Note: This is only required when upgrading from 0.1 to 0.3 not for fresh installs.
+> Note: The start of services is only required when upgrading from 0.1 to 0.3 not for fresh installs.
 ```
 
 > Enable port 80 (firewall blocks port 80 by default on Centos),
 ```
-$ sudo vi /etc/sysconfig/iptables
+> sudo vi /etc/sysconfig/iptables
 > Copy the ssh accept line and change the port to 80
-$ sudo service iptables restart
+> sudo service iptables restart
 > reference: http://www.binarytides.com/open-http-port-iptables-centos/
 ```
 
